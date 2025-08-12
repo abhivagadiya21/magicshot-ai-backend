@@ -11,5 +11,9 @@ router.post('/register', async function(req, res, next) {
     await functionHandler.requestHandler(req, res, controller.registerFn)
 })
 
+router.post('/change_hair_style', async function(req, res, next) {
+    await functionHandler.requestHandler(req, res, controller.registerFn)
+})
+
 
 module.exports = router;
