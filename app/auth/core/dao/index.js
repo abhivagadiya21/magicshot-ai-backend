@@ -17,10 +17,6 @@ const registerUser = async function (email, passwordHash) {
 };
 
 
-
-
-
-
 module.exports = {
     validateUser,
     registerUser
