@@ -16,11 +16,6 @@ const registerUser = async function (email, passwordHash) {
     return await pgsql.query(query, values);
 };
 
-
-
-
-
-
 module.exports = {
     validateUser,
     registerUser
