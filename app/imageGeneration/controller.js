@@ -1,10 +1,6 @@
 const isRequired = require('../../handler/utils/validator').isRequired
 const auth = require('./core/changehair')
 
-const chnagehairstyleFn = async function (req) {
-    let uploadPhoto = isRequired(req.body.uPhoto)
-    return await auth.changeHair(uploadPhoto)
-}
 
 const agePredictorFn = async function (req) {
     let userId = isRequired(req.body.userId)
@@ -23,6 +19,18 @@ const babyGeneratorFn = async function (req) {
 }
 
 const changeHairstyleFn = async function (req) {
+    let userid = isRequired(req.body.userid);
+    // let uploadimage = isRequired(req.file.filename); // from multer
+    let uploadimage = isRequired(req.file.uploadimage);
+    let gender = isRequired(req.body.gender);
+    let hairStyle = isRequired(req.body.hairStyle);
+    let hairColor = isRequired(req.body.hairColor);
+    let genraterImg = isRequired(req.body.genraterImg);
+    let transactionId = isRequired(req.body.transactionId);
+    let createdAT = new Date();
+    let updatedAT = new Date();
+
+    return await auth.changeHair(email, password);
 }
 
 module.exports = {

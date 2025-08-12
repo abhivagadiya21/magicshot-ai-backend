@@ -8,7 +8,7 @@ const { v4: uuidv4 } = require("uuid");
 
 const changeHair = async function (uploadPhoto) {
     try {
-        let hair_insert = await authDao.changeHair_insert(userid, uploadimg, gender, hairStyle, hairColor, genraterImg, transactionId, createdAT, updatedAT);
+        let hair_insert = await authDao.changeHair_insert(userid, uploadimage, gender, hairStyle, hairColor, genraterImg, transactionId, createdAT, updatedAT);
         if (hair_insert.rowCount === 0) {
             return new ResponseModal()
                 .setStatus("error")
@@ -33,4 +33,8 @@ const changeHair = async function (uploadPhoto) {
             .setStatusCode(500)
             .setMessage("Server error");
     }
+}
+
+module.exports={
+    changeHair
 }
