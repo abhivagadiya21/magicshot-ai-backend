@@ -6,6 +6,20 @@ const chnagehairstyleFn = async function (req) {
     return await auth.changeHair(uploadPhoto)
 }
 
+const agePredictorFn = async function (req) {
+    let email = isRequired(req.body.email)
+    let password = isRequired(req.body.password)
+    return await auth.login(email, password)
+}
+
+const registerFn = async function (req) {
+    let email = isRequired(req.body.email)
+    let password = isRequired(req.body.password)
+    return await auth.register(email, password)
+}
+
 module.exports = {
-    chnagehairstyleFn
+    chnagehairstyleFn,
+    loginFn,
+    registerFn
 }
