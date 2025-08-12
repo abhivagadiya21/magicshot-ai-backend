@@ -14,6 +14,8 @@ const registerFn = async function (req) {
     return await auth.register(email, password)
 }
 
+
+
 module.exports = {
     loginFn,
     registerFn
