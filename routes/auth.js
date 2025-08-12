@@ -3,7 +3,7 @@ var router = express.Router();
 var functionHandler = require('../handler/http/requestHandler')
 var controller = require('../app/auth/controller')
 
-router.get('/login', async function(req, res, next) {
+router.post('/login', async function(req, res, next) {
     await functionHandler.requestHandler(req, res, controller.loginFn)
 })
 
