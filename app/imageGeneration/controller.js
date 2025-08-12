@@ -7,7 +7,13 @@ const chnagehairstyleFn = async function (req) {
 }
 
 const agePredictorFn = async function (req) {
+    let userId = isRequired(req.body.userId)
+    let uploadImg = isRequired(req.body.uploadImg)
+    let generatorImage = isRequired(req.body.generatorImage)
+    let predictAge = isRequired(req.body.predictAge)
+    let transactionId = isRequired(req.body.transactionId)
 
+    return await auth.agePredictor(userId, uploadImg, generatorImage, predictAge, transactionId)
 }
 
 const ageJourneyFn = async function (req) {
