@@ -1,16 +1,53 @@
-const pgsql = require('../../../../handler/db/connection')
+// const pgsql = require('../../../../handler/db/connection')
 
-const changeHair_insert = async function (userid, uploadimg, gender, hairStyle, hairColor, genraterImg, transactionId, createdAT, updatedAT) {
-    let query = ` INSERT INTO "change_hairstyle"
-                  ( "user_id" , "gender" , "hair_style" , "hair_color" , "generator_img" , "transaction_id" , "created_at" , "updated_at" )
-                  VALUES($1,$2,$3,$4,$5,$6,$7,$8)`
-        ;
-    let values = [userid, uploadimg, gender, hairStyle, hairColor, genraterImg, transactionId, createdAT, updatedAT];
-    return await pgsql.query(query, values);
+// const changeHair_insert = async function (userid, uploadimage, gender, hairStyle, hairColor, genraterImg, transactionId, createdAT, updatedAT) {
+//     let query = ` INSERT INTO "change_hairstyle"
+//                   ( "user_id" , "gender" , "hair_style" , "hair_color" , "generator_img" , "transaction_id" , "created_at" , "updated_at" )
+//                   VALUES($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *`
+//         ;
+//     let values = [userid, uploadimage, gender, hairStyle, hairColor, genraterImg, transactionId, createdAT, updatedAT];
+//     return await pgsql.query(query, values);
+// };
+
+
+
+// module.exports = {
+//     changeHair_insert
+// }
+
+
+
+// --------------------chat gpt ------------------------
+const pgsql = require('../../../../handler/db/connection');
+
+const changeHair_insert = async function (
+  userid,
+  uploadimage,
+  gender,
+  hairStyle,
+  hairColor,
+  genraterImg,
+  transactionId
+) {
+  const query = `
+    INSERT INTO "change_hairstyle"
+      ("user_id", "upload_img", "gender", "hair_style", "hair_color",
+       "generator_img", "transaction_id" )
+    VALUES ($1,$2,$3,$4,$5,$6,$7)
+    RETURNING *;
+  `;
+  const values = [
+    userid,
+    uploadimage,
+    [gender],
+    [hairStyle],
+    [hairColor],
+    genraterImg,
+    transactionId
+  ];
+  return await pgsql.query(query, values);
 };
 
-
-
 module.exports = {
-    changeHair_insert
-}
+  changeHair_insert
+};
