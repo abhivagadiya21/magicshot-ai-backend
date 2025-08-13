@@ -9,6 +9,7 @@ var createMulterUpload = require('../handler/utils/multerConfig')
 const uploadChangeHair = createMulterUpload("changehair_upload");
 // const uploadBabyGenerator = createMulterUpload("baby_upload/");
 // const uploadAgeJourney = createMulterUpload("agejourney_upload/");
+const uploadAgePredictor = createMulterUpload("agepredictor_upload/");
 
 router.post('/login', async function (req, res, next) {
     await functionHandler.requestHandler(req, res, controller.loginFn)
