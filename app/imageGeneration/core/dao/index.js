@@ -27,32 +27,47 @@ const changeHair_insert = async function (
   ];
   return await pgsql.query(query, values);
 };
+
 const agePredictor_insert = async function (
   userid,
   uploadimage,
-  genrater_Img,  
   Predict_age,
   transactionId
 ) {
   const query = `
     INSERT INTO "age_predictor"
-      ("user_id", "upload_img", "generator_img", Predict_age, "transaction_id")
+      ("user_id", "upload_img", Predict_age, "transaction_id")
+    VALUES ($1,$2,$3,$4)
+    RETURNING *;
+  `;
+  const values = [
+    userid,
+    uploadimage,
+    Predict_age,
+    transactionId
+  ];
+  return await pgsql.query(query, values);
+};
+
+const age_journey = async function (userid, uploadimage, select_age, genrater_Img, transactionId) {
+  const query = `
+    INSERT INTO "age_journey"
+      ("user_id", "upload_img", "select_age", "genrater_img", "transaction_id")
     VALUES ($1,$2,$3,$4,$5)
     RETURNING *;
   `;
   const values = [
     userid,
     uploadimage,
-    genrater_Img,   // <-- અહીં સાચી જગ્યા
-    Predict_age,    // <-- Predict_age હવે generator_img પછી
+    select_age,
+    genrater_Img,
     transactionId
   ];
   return await pgsql.query(query, values);
 };
 
-
-
 module.exports = {
   changeHair_insert,
-  agePredictor_insert
+  agePredictor_insert,
+  age_journey
 };

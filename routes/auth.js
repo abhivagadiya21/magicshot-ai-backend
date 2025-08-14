@@ -22,7 +22,6 @@ router.post('/register', async function (req, res, next) {
 router.post('/age-predictor', 
     uploadAgePredictor.fields([
         { name: 'agePredictorUpload', maxCount: 1 },
-        { name: 'genraterImg', maxCount: 1 }
     ]), async function (req, res, next) {
     await functionHandler.requestHandler(req, res, controller2.agePredictorFn)
 })
