@@ -57,7 +57,7 @@ const path = require("path");
 const fs = require("fs");
 const { v4: uuidv4 } = require("uuid");
 
-function createMulterUpload(folderName = "changehair_upload ,agePredictor_upload") {
+function createMulterUpload(folderName = "changehair_upload ,agePredictor_upload,baby_upload,agejourney_upload") {
   const absFolder = path.join(__dirname, "..", "..", folderName);
   fs.mkdirSync(absFolder, { recursive: true });
 

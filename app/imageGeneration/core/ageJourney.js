@@ -1,25 +1,25 @@
 const ResponseModal = require('../../../handler/http/ResponseModal');
 const authDao = require('./dao');
-const babyGenerator = async function (userid, parent1, parent2, gender, genraterImg, transactionId) {
+const ageJourney = async function (userid, uploadimage, selectAge, genraterImg, transactionId) {
     try {
-        const result =await authDao.babygenerator_insert(userid, parent1, parent2, gender, genraterImg, transactionId);
+        const result = await authDao.ageJourney_insert(userid, uploadimage, selectAge, genraterImg, transactionId);
         if (!result || result.rowCount === 0) {
             return new ResponseModal()
                 .setStatus('error')
                 .setStatusCode(400)
                 .setMessage('Insert failed');
         }
-        const fileUrl = `/baby_upload/${parent1}`;
+        const fileUrl = `/ageJourney_upload/${parent1}`;
         return new ResponseModal()
             .setStatus('success')
             .setStatusCode(200)
-            .setMessage('babyGenerator change saved')
+            .setMessage('age journy change saved')
             .setData({
                 file: parent1,
                 fileUrl
             });
     } catch (error) {
-        console.error('babygenerator error:', error);
+        console.error('agejourney error:', error);
         return new ResponseModal()
             .setStatus('error')
             .setStatusCode(500)
@@ -27,5 +27,5 @@ const babyGenerator = async function (userid, parent1, parent2, gender, genrater
     }
 }
 module.exports = {
-    babyGenerator
+    ageJourney
 }
