@@ -1,3 +1,9 @@
+const isRequired = require('../../handler/utils/validator').isRequired;
+const changehairCore = require('./core/changehair');
+const agePrediCore = require('./core/agePredictor');
+const { v4: uuidv4 } = require("uuid");
+const path = require("path");
+
 // const isRequired = require('../../handler/utils/validator').isRequired
 // const auth = require('./core/changehair')
 
@@ -35,12 +41,57 @@
 
 
 // ----------------------chat gpt --------------------
-// const isRequired = require('../../handler/utils/validator').isRequired;
-// const changehairCore = require('./core/changehair');
-// const { v4: uuidv4 } = require("uuid");
-// const path = require("path");
 
-const agePredictorFn = async function (req) { };
+
+const agePredictorFn = async function (req) {
+  const userid = isRequired(req.body.userid);
+
+  let uploadimage = null;
+  let genraterImg = null;
+
+  const baseURL = `${req.protocol}://${req.get('host')}/uploads`;
+
+  // agePredictorUpload field check
+  if (req.files && req.files.agePredictorUpload && req.files.agePredictorUpload.length > 0) {
+    const uploadedFile = req.files.agePredictorUpload[0];
+    console.log("Uploaded image file name:", uploadedFile.filename);
+    console.log("Uploaded image full path:", uploadedFile.path);
+
+    uploadimage = `${baseURL}/${uploadedFile.filename}`;
+
+    // genrater_Img field check
+    if (req.files.genrater_Img && req.files.genrater_Img.length > 0) {
+      const genFile = req.files.genrater_Img[0];
+      genraterImg = `${baseURL}/${genFile.filename}`;
+    } else {
+      const newFileName = `${uuidv4()}${path.extname(uploadedFile.originalname)}`;
+      genraterImg = `${baseURL}/${newFileName}`;
+    }
+  } else {
+    // no image uploaded, check body for genrater_Img name
+    if (req.body.genrater_Img) {
+      genraterImg = `${baseURL}/${req.body.genrater_Img}`;
+    }
+  }
+
+const userId = isRequired(req.body.userid);
+const Predict_age = isRequired(req.body.predictage);
+const transactionId = isRequired(req.body.transactionId);
+// lowercase 'transactionId'
+
+ return await agePrediCore.agePredictor(
+  userid,
+  uploadimage,
+  genraterImg,
+  Predict_age,
+  transactionId
+);
+};
+
+
+
+
+
 const ageJourneyFn = async function (req) { };
 const babyGeneratorFn = async function (req) { };
 
@@ -75,21 +126,58 @@ const babyGeneratorFn = async function (req) { };
 //   );
 // };
 
+// const isRequired = require('../../handler/utils/validator').isRequired;
+// const changehairCore = require('./core/changehair');
+// const { v4: uuidv4 } = require("uuid");
+// const path = require("path");
+// const fs = require("fs");
+
+// const changeHairstyleFn = async function (req) {
+//   const userid = isRequired(req.body.userid);
+
+//   let uploadimage = null;
+//   let genraterImg = null;
+
+//   if (req.file) {
+//     // Generate UUID name for original uploaded image
+//     const uuidName = `${uuidv4()}${path.extname(req.file.originalname)}`;
+//     const uploadPath = path.join(req.file.destination, uuidName);
+
+//     // Rename/move uploaded file to UUID name
+//     fs.renameSync(req.file.path, uploadPath);
+
+//     uploadimage = uuidName;
+
+//     // If no genraterImg provided, create another UUID for AI image
+//     genraterImg = req.body.genraterImg || `${uuidv4()}${path.extname(req.file.originalname)}`;
+//   } else {
+//     genraterImg = req.body.genraterImg || null;
+//   }
+
+//   const gender = isRequired(req.body.gender);
+//   const hairStyle = isRequired(req.body.hairStyle);
+//   const hairColor = isRequired(req.body.hairColor);
+//   const transactionId = isRequired(req.body.transactionId);
+//   const createdAT = new Date();
+//   const updatedAT = new Date();
+
+//   return await changehairCore.changeHair(
+//     userid,
+//     uploadimage,
+//     gender,
+//     hairStyle,
+//     hairColor,
+//     genraterImg,
+//     transactionId,
+//     createdAT,
+//     updatedAT
+//   );
+// };
+
+// module.exports = { changeHairstyleFn };
 
 
 
-
-
-
-
-
-
-
-const isRequired = require('../../handler/utils/validator').isRequired;
-const changehairCore = require('./core/changehair');
-const { v4: uuidv4 } = require("uuid");
-const path = require("path");
-const fs = require("fs");
 
 const changeHairstyleFn = async function (req) {
   const userid = isRequired(req.body.userid);
@@ -97,23 +185,29 @@ const changeHairstyleFn = async function (req) {
   let uploadimage = null;
   let genraterImg = null;
 
-  if (req.files && req.files.HairuploadPhoto && req.files.HairuploadPhoto[0]) {
-    const fileData = req.files.HairuploadPhoto[0];
-    const uuidName = `${uuidv4()}${path.extname(fileData.originalname)}`;
-    const uploadPath = path.join(fileData.destination, uuidName);
-    fs.renameSync(fileData.path, uploadPath);
-    uploadimage = uuidName; 
-  }
+  const baseURL = `${req.protocol}://${req.get('host')}/uploads`;
 
+  // HairuploadPhoto field check
+  if (req.files && req.files.HairuploadPhoto && req.files.HairuploadPhoto.length > 0) {
+    const uploadedFile = req.files.HairuploadPhoto[0];
+    console.log("Uploaded image file name:", uploadedFile.filename);
+    console.log("Uploaded image full path:", uploadedFile.path);
 
-  if (req.files && req.files.genraterImg && req.files.genraterImg[0]) {
-    const fileData = req.files.genraterImg[0];
-    const uuidName = `${uuidv4()}${path.extname(fileData.originalname)}`;
-    const uploadPath = path.join(fileData.destination, uuidName);
-    fs.renameSync(fileData.path, uploadPath);
-    genraterImg = uuidName;
+    uploadimage = `${baseURL}/${uploadedFile.filename}`;
+
+    // genraterImg field check
+    if (req.files.genraterImg && req.files.genraterImg.length > 0) {
+      const genFile = req.files.genraterImg[0];
+      genraterImg = `${baseURL}/${genFile.filename}`;
+    } else {
+      const newFileName = `${uuidv4()}${path.extname(uploadedFile.originalname)}`;
+      genraterImg = `${baseURL}/${newFileName}`;
+    }
   } else {
-    genraterImg = req.body.genraterImg || null;
+    // no image uploaded, check body for genraterImg name
+    if (req.body.genraterImg) {
+      genraterImg = `${baseURL}/${req.body.genraterImg}`;
+    }
   }
 
 
@@ -141,6 +235,8 @@ const changeHairstyleFn = async function (req) {
 };
 
 // module.exports = { changeHairstyleFn };
+
+
 
 
 
