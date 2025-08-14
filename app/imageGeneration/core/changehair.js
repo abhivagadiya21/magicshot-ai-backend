@@ -71,6 +71,11 @@ const changeHair = async function (
  
 ) {
   try {
+    // Public URL path (served by app.js)
+    const fileUrl = `/changehair_upload/${uploadimage}`;
+    uploadimage=fileUrl
+
+
     const result = await authDao.changeHair_insert(
       userid,
       uploadimage,
@@ -89,8 +94,6 @@ const changeHair = async function (
         .setMessage('Insert failed');
     }
 
-    // Public URL path (served by app.js)
-    const fileUrl = `/changehair_upload/${uploadimage}`;
 
     return new ResponseModal()
       .setStatus('success')

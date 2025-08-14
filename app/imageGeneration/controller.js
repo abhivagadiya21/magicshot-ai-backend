@@ -97,21 +97,28 @@ const changeHairstyleFn = async function (req) {
   let uploadimage = null;
   let genraterImg = null;
 
-  if (req.file) {
-    // Generate UUID name for original uploaded image
-    const uuidName = `${uuidv4()}${path.extname(req.file.originalname)}`;
-    const uploadPath = path.join(req.file.destination, uuidName);
+  if (req.files && req.files.HairuploadPhoto && req.files.HairuploadPhoto[0]) {
+    const fileData = req.files.HairuploadPhoto[0];
+    const uuidName = `${uuidv4()}${path.extname(fileData.originalname)}`;
+    const uploadPath = path.join(fileData.destination, uuidName);
+    fs.renameSync(fileData.path, uploadPath);
+    uploadimage = uuidName; 
+  }
 
-    // Rename/move uploaded file to UUID name
-    fs.renameSync(req.file.path, uploadPath);
 
-    uploadimage = uuidName;
-
-    // If no genraterImg provided, create another UUID for AI image
-    genraterImg = req.body.genraterImg || `${uuidv4()}${path.extname(req.file.originalname)}`;
+  if (req.files && req.files.genraterImg && req.files.genraterImg[0]) {
+    const fileData = req.files.genraterImg[0];
+    const uuidName = `${uuidv4()}${path.extname(fileData.originalname)}`;
+    const uploadPath = path.join(fileData.destination, uuidName);
+    fs.renameSync(fileData.path, uploadPath);
+    genraterImg = uuidName;
   } else {
     genraterImg = req.body.genraterImg || null;
   }
+
+
+
+
 
   const gender = isRequired(req.body.gender);
   const hairStyle = isRequired(req.body.hairStyle);
@@ -133,7 +140,7 @@ const changeHairstyleFn = async function (req) {
   );
 };
 
-module.exports = { changeHairstyleFn };
+// module.exports = { changeHairstyleFn };
 
 
 
