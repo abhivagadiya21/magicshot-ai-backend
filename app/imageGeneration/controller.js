@@ -7,34 +7,6 @@ const { v4: uuidv4 } = require("uuid");
 const path = require("path");
 const { console } = require('inspector');
 
-
-
-// const changeHairstyleFn = async function (req) {
-//     let userid = isRequired(req.body.userid);
-//     // let uploadimage = isRequired(req.file.filename); // from multer
-//     let uploadimage = isRequired(req.file.uploadimage);
-//     let gender = isRequired(req.body.gender);
-//     let hairStyle = isRequired(req.body.hairStyle);
-//     let hairColor = isRequired(req.body.hairColor);
-//     let genraterImg = isRequired(req.body.genraterImg);
-//     let transactionId = isRequired(req.body.transactionId);
-//     let createdAT = new Date();
-//     let updatedAT = new Date();
-
-//     return await auth.changeHair(userid,uploadimage,gender,hairStyle,hairColor,genraterImg,transactionId,createdAT,updatedAT);
-// }
-
-// module.exports = {
-//     agePredictorFn,
-//     ageJourneyFn,
-//     babyGeneratorFn,
-//     changeHairstyleFn
-// }
-
-
-// ----------------------chat gpt --------------------
-
-
 const agePredictorFn = async function (req) {
   const userId = isRequired(req.body.userId);
 
@@ -60,93 +32,6 @@ const agePredictorFn = async function (req) {
     transactionId
   );
 };
-
-
-
-
-
-
-
-// const changeHairstyleFn = async function (req) {
-//   const userid = isRequired(req.body.userid);
-//   // field name must match the multer.single() in routes: "HairuploadPhoto"
-//   const uploadimage = req.file ? req.file.filename:null;
-//   const gender = isRequired(req.body.gender);
-//   const hairStyle = isRequired(req.body.hairStyle);
-//   const hairColor = isRequired(req.body.hairColor);
-//   // const genraterImg = req.body.genraterImg;
-//   const genraterImg =
-//     req.body.genraterImg ||
-//     (req.file
-//       ? `${uuidv4()}${path.extname(req.file.originalname)}`
-//       : null); // or some default value
-
-//   const transactionId = isRequired(req.body.transactionId);
-//   const createdAT = new Date();
-//   const updatedAT = new Date();
-
-//   return await changehairCore.changeHair(
-//     userid,
-//     uploadimage,
-//     gender,
-//     hairStyle,
-//     hairColor,
-//     genraterImg,
-//     transactionId,
-//     createdAT,
-//     updatedAT
-//   );
-// };
-
-// const isRequired = require('../../handler/utils/validator').isRequired;
-// const changehairCore = require('./core/changehair');
-// const { v4: uuidv4 } = require("uuid");
-// const path = require("path");
-// const fs = require("fs");
-
-// const changeHairstyleFn = async function (req) {
-//   const userid = isRequired(req.body.userid);
-
-//   let uploadimage = null;
-//   let genraterImg = null;
-
-//   if (req.file) {
-//     // Generate UUID name for original uploaded image
-//     const uuidName = `${uuidv4()}${path.extname(req.file.originalname)}`;
-//     const uploadPath = path.join(req.file.destination, uuidName);
-
-//     // Rename/move uploaded file to UUID name
-//     fs.renameSync(req.file.path, uploadPath);
-
-//     uploadimage = uuidName;
-
-//     // If no genraterImg provided, create another UUID for AI image
-//     genraterImg = req.body.genraterImg || `${uuidv4()}${path.extname(req.file.originalname)}`;
-//   } else {
-//     genraterImg = req.body.genraterImg || null;
-//   }
-
-//   const gender = isRequired(req.body.gender);
-//   const hairStyle = isRequired(req.body.hairStyle);
-//   const hairColor = isRequired(req.body.hairColor);
-//   const transactionId = isRequired(req.body.transactionId);
-//   const createdAT = new Date();
-//   const updatedAT = new Date();
-
-//   return await changehairCore.changeHair(
-//     userid,
-//     uploadimage,
-//     gender,
-//     hairStyle,
-//     hairColor,
-//     genraterImg,
-//     transactionId,
-//     createdAT,
-//     updatedAT
-//   );
-// };
-
-// module.exports = { changeHairstyleFn };
 
 const ageJourneyFn = async function (req) {
   const userid = isRequired(req.body.userid);
