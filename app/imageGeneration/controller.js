@@ -42,7 +42,6 @@ const agePredictorFn = async function (req) {
 
   const baseURL = `${req.protocol}://${req.get('host')}/uploads`;
 
-  // agePredictorUpload field check
   if (req.files && req.files.agePredictorUpload && req.files.agePredictorUpload.length > 0) {
     const uploadedFile = req.files.agePredictorUpload[0];
     console.log("Uploaded image file name:", uploadedFile.filename);
@@ -279,6 +278,7 @@ const changeHairstyleFn = async function (req) {
   );
 };
 
+module.exports = { changeHairstyleFn };
 
 module.exports = {
   agePredictorFn,
