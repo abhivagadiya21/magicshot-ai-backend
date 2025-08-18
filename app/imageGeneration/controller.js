@@ -36,10 +36,9 @@ const { console } = require('inspector');
 
 
 const agePredictorFn = async function (req) {
-  const userid = isRequired(req.body.userid);
+  const userId = isRequired(req.body.userId);
 
   let uploadimage = null;
-  let genraterImg = null;
 
   const baseURL = `${req.protocol}://${req.get('host')}/uploads`;
 
@@ -50,31 +49,14 @@ const agePredictorFn = async function (req) {
     console.log("Uploaded image full path:", uploadedFile.path);
 
     uploadimage = `${baseURL}/${uploadedFile.filename}`;
-
-    // genrater_Img field check
-    if (req.files.genrater_Img && req.files.genrater_Img.length > 0) {
-      const genFile = req.files.genrater_Img[0];
-      genraterImg = `${baseURL}/${genFile.filename}`;
-    } else {
-      const newFileName = `${uuidv4()}${path.extname(uploadedFile.originalname)}`;
-      genraterImg = `${baseURL}/${newFileName}`;
-    }
-  } else {
-    // no image uploaded, check body for genrater_Img name
-    if (req.body.genrater_Img) {
-      genraterImg = `${baseURL}/${req.body.genrater_Img}`;
-    }
   }
 
-  const userId = isRequired(req.body.userid);
-  const Predict_age = isRequired(req.body.predictage);
+  const Predict_age = isRequired(req.body.Predict_age);
   const transactionId = isRequired(req.body.transactionId);
-  // lowercase 'transactionId'
 
   return await agePrediCore.agePredictor(
     userId,
     uploadimage,
-    genraterImg,
     Predict_age,
     transactionId
   );
@@ -198,6 +180,8 @@ const ageJourneyFn = async function (req) {
   }
   const selectAge = isRequired(req.body.age);
   const transactionId = isRequired(req.body.transactionId);
+  const createdAT = new Date();
+  const updatedAT = new Date();
   return await ageJourneyCore.ageJourney(userid, uploadimage, selectAge, genraterImg, transactionId, createdAT, updatedAT);
 };
 
@@ -254,7 +238,6 @@ const changeHairstyleFn = async function (req) {
 
   const baseURL = `${req.protocol}://${req.get('host')}/uploads`;
 
-  // HairuploadPhoto field check
   if (req.files && req.files.HairuploadPhoto && req.files.HairuploadPhoto.length > 0) {
     const uploadedFile = req.files.HairuploadPhoto[0];
     console.log("Uploaded image file name:", uploadedFile.filename);
@@ -262,7 +245,6 @@ const changeHairstyleFn = async function (req) {
 
     uploadimage = `${baseURL}/${uploadedFile.filename}`;
 
-    // genraterImg field check
     if (req.files.genraterImg && req.files.genraterImg.length > 0) {
       const genFile = req.files.genraterImg[0];
       genraterImg = `${baseURL}/${genFile.filename}`;
@@ -271,7 +253,7 @@ const changeHairstyleFn = async function (req) {
       genraterImg = `${baseURL}/${newFileName}`;
     }
   } else {
-    // no image uploaded, check body for genraterImg name
+
     if (req.body.genraterImg) {
       genraterImg = `${baseURL}/${req.body.genraterImg}`;
     }

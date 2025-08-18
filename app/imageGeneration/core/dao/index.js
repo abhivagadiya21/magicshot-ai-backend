@@ -27,26 +27,36 @@ const changeHair_insert = async function (
   ];
   return await pgsql.query(query, values);
 };
+
 const agePredictor_insert = async function (
   userid,
   uploadimage,
-  genrater_Img,
   Predict_age,
   transactionId
 ) {
   const query = `
     INSERT INTO "age_predictor"
-      ("user_id", "upload_img", "generator_img", Predict_age, "transaction_id")
-    VALUES ($1,$2,$3,$4,$5)
+      ("user_id", "upload_img", Predict_age, "transaction_id")
+    VALUES ($1,$2,$3,$4)
     RETURNING *;
   `;
   const values = [
     userid,
     uploadimage,
-    genrater_Img,   
-    Predict_age,  
+    Predict_age,
     transactionId
   ];
+  return await pgsql.query(query, values);
+};
+
+const ageJourney_insert = async function (userid, uploadimage, selectAge, genraterImg, transactionId) {
+  const query = `
+    INSERT INTO "age_journey"
+      ("user_id", "upload_img", "select_age", "generator_img", "transaction_id")
+    VALUES ($1,$2,$3,$4,$5)
+    RETURNING *;
+  `;
+  const values = [userid, uploadimage, selectAge, genraterImg, transactionId];
   return await pgsql.query(query, values);
 };
 
@@ -63,5 +73,6 @@ const babygenerator_insert = async function (userid, parent1, parent2, gender, g
 module.exports = {
   changeHair_insert,
   agePredictor_insert,
-  babygenerator_insert
+  babygenerator_insert,
+  ageJourney_insert
 };

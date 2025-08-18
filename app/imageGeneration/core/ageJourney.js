@@ -9,13 +9,13 @@ const ageJourney = async function (userid, uploadimage, selectAge, genraterImg, 
                 .setStatusCode(400)
                 .setMessage('Insert failed');
         }
-        const fileUrl = `/ageJourney_upload/${parent1}`;
+        const fileUrl = `/ageJourney_upload/${genraterImg}`;
         return new ResponseModal()
             .setStatus('success')
             .setStatusCode(200)
             .setMessage('age journy change saved')
             .setData({
-                file: parent1,
+                file: genraterImg,
                 fileUrl
             });
     } catch (error) {
