@@ -278,7 +278,7 @@ const changeHairstyleFn = async function (req) {
   );
 };
 
-module.exports = { changeHairstyleFn };
+// module.exports = { changeHairstyleFn };
 
 module.exports = {
   agePredictorFn,
