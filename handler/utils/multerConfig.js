@@ -1,72 +1,27 @@
-// const multer = require("multer");
-// const path = require("path");
-// const { v4: uuidv4 } = require("uuid");
-
-// // Create multer storage with dynamic folder
-// function createMulterUpload(folderName) {
-//     const storage = multer.diskStorage({
-//         destination: (req, file, cb) => {
-//             cb(null, folderName); // unique folder for each route
-//         },
-//         filename: (req, file, cb) => {
-//             const uniqueName = uuidv4() + path.extname(file.originalname);
-//             cb(null, uniqueName);
-//         }
-//     });
-//     return multer({ storage: storage });
-// }
-
-// module.exports = createMulterUpload;
-
-
-
-
-
-
-//-------------------chat gpt---------------------------
-// const multer = require("multer");
-// const path = require("path");
-// const fs = require("fs");
-// const { v4: uuidv4 } = require("uuid");
-
-// function createMulterUpload(folderName = "changehair_upload") {
-//   // Save uploads inside project root
-//   const absFolder = path.isAbsolute(folderName)
-//     ? folderName
-//     : path.join(__dirname, "..", "..", folderName);
-
-//   // Ensure folder exists
-//   fs.mkdirSync(absFolder, { recursive: true });
-
-//   const storage = multer.diskStorage({
-//     destination: (req, file, cb) => cb(null, absFolder),
-//     filename: (req, file, cb) => {
-//       const ext = path.extname(file.originalname || ".jpg");
-//       cb(null, `${uuidv4()}${ext}`);
-//     },
-//   });
-
-//   return multer({ storage });
-// }
-
-// module.exports = createMulterUpload;
-
-
+// handler/utils/multerConfig.js
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
-const { v4: uuidv4 } = require("uuid");
+const { v4: uuidv4 } = require("uuid");  // 👈 uuid use karva mate
 
-function createMulterUpload(folderName = "changehair_upload ,agePredictor_upload,baby_upload,agejourney_upload") {
-  const absFolder = path.join(__dirname, "..", "..", folderName);
-  fs.mkdirSync(absFolder, { recursive: true });
+function createMulterUpload(folderName) {
+  const uploadPath = path.join(__dirname, "../../uploads", folderName);
+
+  // ensure folder exists
+  if (!fs.existsSync(uploadPath)) {
+    fs.mkdirSync(uploadPath, { recursive: true });
+  }
 
   const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, absFolder),
+    destination: (req, file, cb) => {
+      cb(null, uploadPath);
+    },
     filename: (req, file, cb) => {
-      const ext = path.extname(file.originalname || ".jpg");
-      const filename = `${uuidv4()}${ext}`;
-      cb(null, filename);
+      const uniqueName = uuidv4() + path.extname(file.originalname);
+      cb(null, uniqueName);
+
+      // 👇 Store DB path in request so route can use it
+      req.savedFilePath = `/uploads/${folderName}/${uniqueName}`;
     },
   });
 
@@ -74,4 +29,3 @@ function createMulterUpload(folderName = "changehair_upload ,agePredictor_upload
 }
 
 module.exports = createMulterUpload;
-

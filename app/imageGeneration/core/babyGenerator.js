@@ -9,13 +9,13 @@ const babyGenerator = async function (userid, parent1, parent2, gender, genrater
                 .setStatusCode(400)
                 .setMessage('Insert failed');
         }
-        const fileUrl = `/baby_upload/${parent1}`;
+        const fileUrl = `/baby_upload/${genraterImg}`;
         return new ResponseModal()
             .setStatus('success')
             .setStatusCode(200)
             .setMessage('babyGenerator change saved')
             .setData({
-                file: parent1,
+                file: genraterImg,
                 fileUrl
             });
     } catch (error) {

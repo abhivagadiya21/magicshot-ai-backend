@@ -56,7 +56,7 @@ const ageJourney_insert = async function (userid, uploadimage, selectAge, genrat
     VALUES ($1,$2,$3,$4,$5)
     RETURNING *;
   `;
-  const values = [userid, [uploadimage], selectAge, [genraterImg], transactionId];
+  const values = [userid, uploadimage, selectAge, genraterImg, transactionId];
   return await pgsql.query(query, values);
 };
 
