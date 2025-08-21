@@ -12,7 +12,7 @@ const agePredictorFn = async function (req) {
 
   let uploadimage = null;
 
-  const baseURL = `${req.protocol}://${req.get('host')}/uploads`;
+  const baseURL = `${req.protocol}://${req.get('host')}/uploads/agepredictor_upload`;
 
   if (req.files && req.files.agePredictorUpload && req.files.agePredictorUpload.length > 0) {
     const uploadedFile = req.files.agePredictorUpload[0];
@@ -38,29 +38,29 @@ const ageJourneyFn = async function (req) {
   let uploadimage = null;
   let genraterImg = null;
 
-  const baseURL = `${req.protocol}://${req.get('host')}/uploads`;
+  const baseURL = `${req.protocol}://${req.get('host')}/uploads/agejourney_upload`;
 
-  // HairuploadPhoto field check
   if (req.files && req.files.ageJourneyUpload && req.files.ageJourneyUpload.length > 0) {
     const uploadedFile = req.files.ageJourneyUpload[0];
     console.log("Uploaded image file name:", uploadedFile.filename);
     console.log("Uploaded image full path:", uploadedFile.path);
 
     uploadimage = `${baseURL}/${uploadedFile.filename}`;
+    genraterImg=uploadimage;
 
-    // genraterImg field check
-    if (req.files.genraterImg && req.files.genraterImg.length > 0) {
-      const genFile = req.files.genraterImg[0];
-      genraterImg = `${baseURL}/${genFile.filename}`;
-    } else {
-      const newFileName = `${uuidv4()}${path.extname(uploadedFile.originalname)}`;
-      genraterImg = `${baseURL}/${newFileName}`;
-    }
+    // if (req.files.genraterImg && req.files.genraterImg.length > 0) {
+    //   const genFile = req.files.genraterImg[0];
+    //   genraterImg = `${baseURL}/${genFile.filename}`;
+    // } else {
+    //   const newFileName = `${uuidv4()}${path.extname(uploadedFile.originalname)}`;
+    //   genraterImg = `${baseURL}/${newFileName}`;
+    // }
   } else {
-    // no image uploaded, check body for genraterImg name
-    if (req.body.genraterImg) {
-      genraterImg = `${baseURL}/${req.body.genraterImg}`;
-    }
+    
+
+    // if (req.body.genraterImg) {
+    //   genraterImg = `${baseURL}/${req.body.genraterImg}`;
+    // }
   }
   const selectAge = isRequired(req.body.age);
   const transactionId = isRequired(req.body.transactionId);
@@ -69,14 +69,13 @@ const ageJourneyFn = async function (req) {
   return await ageJourneyCore.ageJourney(userid, uploadimage, selectAge, genraterImg, transactionId, createdAT, updatedAT);
 };
 
-
 const babyGeneratorFn = async function (req) {
   const userid = isRequired(req.body.userid);
   let parent1 = null;
   let parent2 = null;
   let genraterImg = null;
 
-  const baseURL = `${req.protocol}://${req.get('host')}/uploads`;
+  const baseURL = `${req.protocol}://${req.get('host')}/uploads/baby_upload`;
   if ((req.files && req.files.parent1 && req.files.parent1.length > 0) || (req.files && req.files.parent2 && req.files.parent2.length > 0)) {
 
     if (req.files.parent1 && req.files.parent1.length > 0) {
@@ -91,23 +90,23 @@ const babyGeneratorFn = async function (req) {
       console.log("uploaded image parent 2 path name :", uploadParent2.path);
       parent2 = `${baseURL}/${uploadParent2.filename}`;
     }
-    if (req.files.genraterImg && req.files.genraterImg.length > 0) {
-      const genFile = req.files.genraterImg[0];
-      genraterImg = `${baseURL}/${genFile.filename}`;
-    } else {
-      const newFileName = `${uuidv4()}${path.extname(uploadedFile.originalname)}`;
-      genraterImg = `${baseURL}/${newFileName}`;
-    }
+    // if (req.files.genraterImg && req.files.genraterImg.length > 0) {
+    //   const genFile = req.files.genraterImg[0];
+    //   genraterImg = `${baseURL}/${genFile.filename}`;
+    // } else {
+    //   const newFileName = `${uuidv4()}${path.extname(uploadedFile.originalname)}`;
+    //   genraterImg = `${baseURL}/${newFileName}`;
+    // }
+    genraterImg=parent1;
 
   } else {
 
-    if (req.body.genraterImg) {
-      genraterImg = `${baseURL}/${req.body.genraterImg}`;
-    }
+    // if (req.body.genraterImg) {
+    //   genraterImg = `${baseURL}/${req.body.genraterImg}`;
+    // }
   }
 
   const gender = isRequired(req.body.gender);
-  // const generatorimg = isRequired(req.body.generatorimg);
   const transactionId = isRequired(req.body.transactionId);
   const createdAT = new Date();
   const updatedAT = new Date();
@@ -120,7 +119,7 @@ const changeHairstyleFn = async function (req) {
   let uploadimage = null;
   let genraterImg = null;
 
-  const baseURL = `${req.protocol}://${req.get('host')}/uploads`;
+  const baseURL = `${req.protocol}://${req.get('host')}/uploads/changehair_upload`;
 
   if (req.files && req.files.HairuploadPhoto && req.files.HairuploadPhoto.length > 0) {
     const uploadedFile = req.files.HairuploadPhoto[0];
@@ -129,18 +128,20 @@ const changeHairstyleFn = async function (req) {
 
     uploadimage = `${baseURL}/${uploadedFile.filename}`;
 
-    if (req.files.genraterImg && req.files.genraterImg.length > 0) {
-      const genFile = req.files.genraterImg[0];
-      genraterImg = `${baseURL}/${genFile.filename}`;
-    } else {
-      const newFileName = `${uuidv4()}${path.extname(uploadedFile.originalname)}`;
-      genraterImg = `${baseURL}/${newFileName}`;
-    }
+    genraterImg = uploadimage;
+
+    // if (req.files.genraterImg && req.files.genraterImg.length > 0) {
+    //   const genFile = req.files.genraterImg[0];
+    //   genraterImg = `${baseURL}/${genFile.filename}`;
+    // } else {
+    //   const newFileName = `${uuidv4()}${path.extname(uploadedFile.originalname)}`;
+    //   genraterImg = `${baseURL}/${newFileName}`;
+    // }
   } else {
 
-    if (req.body.genraterImg) {
-      genraterImg = `${baseURL}/${req.body.genraterImg}`;
-    }
+    // if (req.body.genraterImg) {
+    //   genraterImg = `${baseURL}/${req.body.genraterImg}`;
+    // }
   }
 
   const gender = isRequired(req.body.gender);
@@ -162,8 +163,6 @@ const changeHairstyleFn = async function (req) {
     updatedAT
   );
 };
-
-// module.exports = { changeHairstyleFn };
 
 module.exports = {
   agePredictorFn,

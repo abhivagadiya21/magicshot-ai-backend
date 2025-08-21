@@ -72,7 +72,7 @@ const changeHair = async function (
 ) {
   try {
     // Public URL path (served by app.js)
-    const fileUrl = `/changehair_upload/${uploadimage}`;
+    const fileUrl = `/changehair_upload/${genraterImg}`;
 
     const result = await authDao.changeHair_insert(
       userid,
@@ -98,7 +98,7 @@ const changeHair = async function (
       .setStatusCode(200)
       .setMessage('Hair change saved')
       .setData({
-        file: uploadimage,
+        file: genraterImg,
         fileUrl
       });
   } catch (error) {
