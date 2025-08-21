@@ -1,6 +1,15 @@
 const ResponseModal = require('../../../handler/http/ResponseModal')
 const authDao = require('./dao')
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+
+const generateToken = (user) => {
+    return jwt.sign(
+        { id: user.id, email: user.email },
+        process.env.JWT_SECRET,
+        { expiresIn: process.env.JWT_EXPIRES_IN || "1d" }
+    );
+};
 
 const login = async function (email, password) {
     let res = await authDao.validateUser(email);
@@ -21,18 +30,20 @@ const login = async function (email, password) {
             .setMessage("Invalid email or password");
     }
 
+    
+    const token = generateToken(user);
+
     return new ResponseModal()
         .setStatus("success")
         .setStatusCode(200)
         .setData({
-            token: "generateToken",
+            token,
             user: { id: user.id, email: user.email }
         });
 };
 
 const register = async function (email, password) {
     try {
-        // check if user already exists
         let existingUser = await authDao.validateUser(email);
         if (existingUser.rows.length > 0) {
             return new ResponseModal()
@@ -41,17 +52,18 @@ const register = async function (email, password) {
                 .setMessage("User already exists");
         }
 
-        // hash password
         const hashedPassword = await bcrypt.hash(password, 10);
-
-        // ✅ use authDao.registerUser (not registerUser.createUser)
         let res = await authDao.registerUser(email, hashedPassword);
+        const user = res.rows[0];
+
+        const token = generateToken(user);
 
         return new ResponseModal()
             .setStatus("success")
             .setStatusCode(201)
             .setData({
-                user: { id: res.rows[0].id, email: res.rows[0].email }
+                token,
+                user: { id: user.id, email: user.email }
             })
             .setMessage("User registered successfully");
     } catch (error) {
