@@ -19,9 +19,9 @@ const changeHair_insert = async function (
   const values = [
     userid,
     uploadimage,
-    [gender],
-    [hairStyle],
-    [hairColor],
+    gender,
+    hairStyle,
+    hairColor,
     genraterImg,
     transactionId
   ];
