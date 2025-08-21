@@ -72,6 +72,8 @@ const changeHair = async function (
 ) {
   try {
     // Public URL path (served by app.js)
+    // console.log("Insert values:", userid, uploadimage, gender, hairStyle, hairColor, genraterImg, transactionId);
+
     const fileUrl = `/changehair_upload/${genraterImg}`;
 
     const result = await authDao.changeHair_insert(
