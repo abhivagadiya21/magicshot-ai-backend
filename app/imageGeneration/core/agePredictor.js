@@ -2,10 +2,11 @@ const ResponseModal = require('../../../handler/http/ResponseModal')
 const authDao = require('./dao')
 
 
-const agePredictor = async function (userid, uploadimage, Predict_age, genrater_Img, transactionId)
+const agePredictor = async function (userid, uploadimage, Predict_age, transactionId)
  {
     try {
-        let res = await authDao.agePredictor_insert(userid, uploadimage, Predict_age, genrater_Img, transactionId);
+        // let res = await 
+        let res = await authDao.agePredictor_insert(userid, uploadimage, Predict_age, transactionId);
         return new ResponseModal()
             .setStatus("success")
             .setStatusCode(201)
