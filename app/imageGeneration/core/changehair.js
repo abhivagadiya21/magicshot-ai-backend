@@ -68,7 +68,7 @@ const changeHair = async function (
   hairColor,
   genraterImg,
   transactionId
- 
+
 ) {
   try {
     // Public URL path (served by app.js)
@@ -84,7 +84,7 @@ const changeHair = async function (
       hairColor,
       genraterImg,
       transactionId
-      
+
     );
 
     if (!result || result.rowCount === 0) {
@@ -92,6 +92,21 @@ const changeHair = async function (
         .setStatus('error')
         .setStatusCode(400)
         .setMessage('Insert failed');
+    }
+    const descriptionTrans = 'change hair style';
+    const transactionEntry = await authDao.transaction_insert(userid, descriptionTrans, -10);
+    if (!transactionEntry || transactionEntry.rowCount === 0) {
+      return new ResponseModal()
+        .setStatus('error')
+        .setStatusCode(400)
+        .setMessage('transaction failed');
+    }
+    const totalCredits = await authDao.totalCredits(userid);
+    if (!totalCredits || totalCredits.rowCount === 0) {
+      return new ResponseModal()
+        .setStatus('error')
+        .setStatusCode(400)
+        .setMessage('credits fetch failed');
     }
 
 
