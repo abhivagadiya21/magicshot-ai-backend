@@ -84,11 +84,17 @@ const totalCredits = async (userId) => {
   let values = [userId];
   return await pgsql.query(query, values);
 }
+const validForGenrater = async (userId) => {
+  let query = `SELECT credit FROM "usersregister" WHERE "id" = $1`;
+  let values = [userId];
+  return await pgsql.query(query, values);
+}
 module.exports = {
   changeHair_insert,
   agePredictor_insert,
   babygenerator_insert,
   ageJourney_insert,
   transaction_insert,
-  totalCredits
+  totalCredits,
+  validForGenrater
 };

@@ -71,10 +71,21 @@ const changeHair = async function (
 
 ) {
   try {
-    // Public URL path (served by app.js)
-    // console.log("Insert values:", userid, uploadimage, gender, hairStyle, hairColor, genraterImg, transactionId);
+    const validGenraterImg = await authDao.validForGenrater(userid);
+    if (!validGenraterImg || validGenraterImg.rowCount === 0) {
+      return new ResponseModal()
+        .setStatus('error')
+        .setStatusCode(404)
+        .setMessage('User not found');
+    }
 
-    const fileUrl = `/changehair_upload/${genraterImg}`;
+    const userCredit = validGenraterImg.rows[0].credit;
+    if (userCredit < 10) {
+      return new ResponseModal()
+        .setStatus('error')
+        .setStatusCode(403)
+        .setMessage('Not enough credits');
+    }
 
     const result = await authDao.changeHair_insert(
       userid,
@@ -110,6 +121,7 @@ const changeHair = async function (
     }
 
 
+    const fileUrl = `/changehair_upload/${genraterImg}`;
     return new ResponseModal()
       .setStatus('success')
       .setStatusCode(200)

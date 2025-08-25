@@ -4,6 +4,22 @@ const authDao = require('./dao')
 
 const agePredictor = async function (userid, uploadimage, Predict_age, genrater_Img, transactionId) {
     try {
+        const validGenraterImg = await authDao.validForGenrater(userid);
+        if (!validGenraterImg || validGenraterImg.rowCount === 0) {
+            return new ResponseModal()
+                .setStatus('error')
+                .setStatusCode(404)
+                .setMessage('User not found');
+        }
+
+        const userCredit = validGenraterImg.rows[0].credit;
+        if (userCredit < 10) {
+            return new ResponseModal()
+                .setStatus('error')
+                .setStatusCode(403)
+                .setMessage('Not enough credits');
+        }
+        
         const result = await authDao.agePredictor_insert(userid, uploadimage, Predict_age, genrater_Img, transactionId);
         if (!result || result.rowCount === 0) {
             return new ResponseModal()

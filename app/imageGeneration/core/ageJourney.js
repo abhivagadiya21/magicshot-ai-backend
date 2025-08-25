@@ -2,6 +2,22 @@ const ResponseModal = require('../../../handler/http/ResponseModal');
 const authDao = require('./dao');
 const ageJourney = async function (userid, uploadimage, selectAge, genraterImg, transactionId) {
     try {
+        const validGenraterImg = await authDao.validForGenrater(userid);
+        if (!validGenraterImg || validGenraterImg.rowCount === 0) {
+            return new ResponseModal()
+                .setStatus('error')
+                .setStatusCode(404)
+                .setMessage('User not found');
+        }
+
+        const userCredit = validGenraterImg.rows[0].credit;
+        if (userCredit < 10) {
+            return new ResponseModal()
+                .setStatus('error')
+                .setStatusCode(403)
+                .setMessage('Not enough credits');
+        }
+
         const result = await authDao.ageJourney_insert(userid, uploadimage, selectAge, genraterImg, transactionId);
         if (!result || result.rowCount === 0) {
             return new ResponseModal()
