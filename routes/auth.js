@@ -45,10 +45,10 @@ router.post('/baby-generator',
 
 router.post('/change-hairstyle',
   uploadChangeHair.fields([{ name: 'HairuploadPhoto', maxCount: 1 },
-// { name: 'genraterImg', maxCount: 1 }
-]), async function (req, res, next) {
-  await functionHandler.requestHandler(req, res, controller2.changeHairstyleFn)
-})
+    // { name: 'genraterImg', maxCount: 1 }
+  ]), async function (req, res, next) {
+    await functionHandler.requestHandler(req, res, controller2.changeHairstyleFn)
+  })
 
 
 router.get("/uploads/:folder/:filename", (req, res) => {
