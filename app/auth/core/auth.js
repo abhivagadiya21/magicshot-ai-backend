@@ -11,6 +11,12 @@ const generateToken = (user) => {
     );
 };
 
+const addSignUpBonus = async function (id) {
+    // let res = await authDao.
+
+    return true
+}
+
 const login = async function (email, password) {
     let res = await authDao.validateUser(email);
     if (res.rows.length === 0) {
@@ -56,6 +62,7 @@ const register = async function (email, password) {
         let res = await authDao.registerUser(email, hashedPassword);
         const user = res.rows[0];
 
+        await addSignUpBonus(res.rows[0].id)
         const token = generateToken(user);
 
         return new ResponseModal()
