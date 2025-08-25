@@ -68,13 +68,24 @@ const changeHair = async function (
   hairColor,
   genraterImg,
   transactionId
- 
+
 ) {
   try {
-    // Public URL path (served by app.js)
-    // console.log("Insert values:", userid, uploadimage, gender, hairStyle, hairColor, genraterImg, transactionId);
+    const validGenraterImg = await authDao.validForGenrater(userid);
+    if (!validGenraterImg || validGenraterImg.rowCount === 0) {
+      return new ResponseModal()
+        .setStatus('error')
+        .setStatusCode(404)
+        .setMessage('User not found');
+    }
 
-    const fileUrl = `/changehair_upload/${genraterImg}`;
+    const userCredit = validGenraterImg.rows[0].credit;
+    if (userCredit < 10) {
+      return new ResponseModal()
+        .setStatus('error')
+        .setStatusCode(403)
+        .setMessage('Not enough credits');
+    }
 
     const result = await authDao.changeHair_insert(
       userid,
@@ -84,7 +95,7 @@ const changeHair = async function (
       hairColor,
       genraterImg,
       transactionId
-      
+
     );
 
     if (!result || result.rowCount === 0) {
@@ -93,8 +104,24 @@ const changeHair = async function (
         .setStatusCode(400)
         .setMessage('Insert failed');
     }
+    const descriptionTrans = 'change hair style';
+    const transactionEntry = await authDao.transaction_insert(userid, descriptionTrans, -10);
+    if (!transactionEntry || transactionEntry.rowCount === 0) {
+      return new ResponseModal()
+        .setStatus('error')
+        .setStatusCode(400)
+        .setMessage('transaction failed');
+    }
+    const totalCredits = await authDao.totalCredits(userid);
+    if (!totalCredits || totalCredits.rowCount === 0) {
+      return new ResponseModal()
+        .setStatus('error')
+        .setStatusCode(400)
+        .setMessage('credits fetch failed');
+    }
 
 
+    const fileUrl = `/changehair_upload/${genraterImg}`;
     return new ResponseModal()
       .setStatus('success')
       .setStatusCode(200)
