@@ -16,7 +16,25 @@ const registerUser = async function (email, passwordHash) {
     return await pgsql.query(query, values);
 };
 
+const addSignUpBouns = async (userId) => {
+    let query = `update "usersregister" set "credit" =  100 where "id" = $1 returning *`;
+    let values = [userId];
+    return await pgsql.query(query, values);
+};
+
+const transaction_insert = async (userId, description, credits) => {
+    let query = `
+        INSERT INTO "transactions" ("user_id", "type_cast", "credits")
+        VALUES ($1, $2, $3)
+        RETURNING *
+    `;
+    let values = [userId, description, credits];
+    return await pgsql.query(query, values);
+};
+
 module.exports = {
     validateUser,
-    registerUser
+    registerUser,
+    addSignUpBouns,
+    transaction_insert
 }

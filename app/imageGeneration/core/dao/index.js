@@ -67,12 +67,28 @@ const babygenerator_insert = async function (userid, parent1, parent2, gender, g
     VALUES ($1,$2,$3,$4,$5,$6)
     RETURNING *`;
   const values = [userid, parent1, parent2, gender, genraterImg, transactionId];
-  return await pgsql.query(query,values);
+  return await pgsql.query(query, values);
 }
 
+const transaction_insert = async (userId, description, credits) => {
+  let query = `
+        INSERT INTO "transactions" ("user_id", "type_cast", "credits")
+        VALUES ($1, $2, $3)
+        RETURNING *
+    `;
+  let values = [userId, description, credits];
+  return await pgsql.query(query, values);
+}
+const totalCredits = async (userId) => {
+  let query = `update "usersregister" set "credit" =  "credit" - 10 where "id" = $1 returning *`;
+  let values = [userId];
+  return await pgsql.query(query, values);
+}
 module.exports = {
   changeHair_insert,
   agePredictor_insert,
   babygenerator_insert,
-  ageJourney_insert
+  ageJourney_insert,
+  transaction_insert,
+  totalCredits
 };
