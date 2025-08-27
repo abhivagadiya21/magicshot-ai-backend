@@ -4,6 +4,8 @@ var functionHandler = require('../handler/http/requestHandler')
 var controller = require('../app/auth/controller')
 var controller2 = require('../app/imageGeneration/controller')
 var createMulterUpload = require('../handler/utils/multerConfig')
+var authMiddleware = require('../middlewares/auth');
+
 
 const uploadChangeHair = createMulterUpload("changehair_upload");
 const uploadBabyGenerator = createMulterUpload("baby_upload");
@@ -56,5 +58,10 @@ router.get("/uploads/:folder/:filename", (req, res) => {
   const filePath = path.join(__dirname, `../uploads/${folder}/${filename}`);
   res.sendFile(filePath);
 });
+
+router.get('/profile', authMiddleware, async function (req, res, next) {
+  await functionHandler.requestHandler(req, res, controller.getUserProfileFn);
+});
+
 
 module.exports = router;
