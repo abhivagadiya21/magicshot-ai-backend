@@ -31,10 +31,16 @@ const transaction_insert = async (userId, description, credits) => {
     let values = [userId, description, credits];
     return await pgsql.query(query, values);
 };
+const getcredit = async (userId) => {
+  let query = `select credit from "usersregister" where "id" = $1`;
+  let values = [userId];
+  return await pgsql.query(query, values);
+}
 
 module.exports = {
     validateUser,
     registerUser,
     addSignUpBouns,
-    transaction_insert
+    transaction_insert,
+    getcredit
 }
