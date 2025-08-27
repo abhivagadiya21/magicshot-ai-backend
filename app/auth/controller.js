@@ -14,9 +14,13 @@ const registerFn = async function (req) {
     return await auth.register(email, password)
 }
 
-
+const getUserProfileFn = async function (req) {
+    let userId = req.user.id; // Assuming authMiddleware attaches user info to req.user
+    return await auth.getUserProfile(userId);
+}
 
 module.exports = {
     loginFn,
-    registerFn
+    registerFn,
+    getUserProfileFn
 }

@@ -1,5 +1,6 @@
 
-const ResponseModal = require('../../../handler/http/ResponseModal')
+const ResponseModal = require('../../../handler/http/ResponseModal');
+const { get } = require('../../../routes/auth');
 const authDao = require('./dao')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
@@ -44,6 +45,31 @@ const addSignUpBouns = async (userId) => {
             .setMessage('internal server error');
     }
 };
+const getUserProfile = async (userId) => {
+    try {
+        const credit = await authDao.getcredit(userId);
+        if (!credit || credit.rowCount === 0) {
+            return new ResponseModal()
+                .setStatus('error')
+                .setStatusCode(400)
+                .setMessage('credit fetch failed');
+        }
+        return new ResponseModal()
+            .setStatus('success')
+            .setStatusCode(200)
+            .setMessage('credit fetch success')
+            .setData({
+                credits: credit.rows[0].credit
+            });
+    } catch (error) {
+        console.error(" Get Credit Function Error:", error.message);
+
+        return new ResponseModal()
+            .setStatus('error')
+            .setStatusCode(500)
+            .setMessage('internal server error');
+    }
+}
 
 const login = async function (email, password) {
     let res = await authDao.validateUser(email);
@@ -66,13 +92,14 @@ const login = async function (email, password) {
 
 
     const token = generateToken(user);
-
+    // const creditRes = await authDao.getcredit(user.id);
+    // const credits = creditRes.rows[0].credit;
     return new ResponseModal()
         .setStatus("success")
         .setStatusCode(200)
         .setData({
             token,
-            user: { id: user.id, email: user.email }
+            user: { id: user.id, email: user.email, credit: user.credits }
         });
 };
 
@@ -92,13 +119,14 @@ const register = async function (email, password) {
         console.log('Registered user:', user);
         await addSignUpBouns(user.id);
         const token = generateToken(user);
+        // await getcredit(user.id);
 
         return new ResponseModal()
             .setStatus("success")
             .setStatusCode(200)
             .setData({
                 token,
-                user: { id: user.id, email: user.email }
+                user: { id: user.id, email: user.email, credit: user.credits }
                 // bouns: addSignUpBouns(user.id),
             })
             .setMessage("User registered successfully");
@@ -113,5 +141,6 @@ const register = async function (email, password) {
 
 module.exports = {
     login,
-    register
+    register,
+    getUserProfile
 }
