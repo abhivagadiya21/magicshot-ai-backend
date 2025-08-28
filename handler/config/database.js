@@ -5,7 +5,7 @@ const database = {
         password: "NiRJmLqMHSTb4PsPbMGIxaJ1GXupyva9",
         database: "magicshot",
         port: 5432,
-        idleTimeoutMillis: 30000
+        idleTimeoutMillis: 3000
     }
 }
 
