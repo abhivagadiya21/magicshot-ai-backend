@@ -11,10 +11,7 @@ var indexRouter = require('./routes/index');
 var app = express();
 
 app.use(logger('dev'));
-// app.use(cors());
-app.use(cors({
-    origin: '*'
-}));
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -22,6 +19,6 @@ app.use(cookieParser());
 app.use('/', indexRouter);
 
 
-app.use("/uploads", cors(), express.static(path.join(__dirname, "uploads")));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 module.exports = app;
