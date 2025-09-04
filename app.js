@@ -13,7 +13,7 @@ app.use(logger('dev'));
 
 // Allow CORS for API routes
 app.use(cors({
-  origin: ["http://localhost:5173", "https://your-frontend-domain.com"], 
+  origin: ["http://localhost:5173", "https://magicshot-ai-pink.vercel.app/"], 
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
