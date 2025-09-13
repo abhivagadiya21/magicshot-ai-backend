@@ -7,9 +7,15 @@ let isRequired = function(value) {
         return value
     }
 }
-
-
+let isRequiredFile = function (file) {
+  if (!file || file === undefined || file === null) {
+    throw new ValidationError(`please upload a file`);
+  } else {
+    return file;
+  }
+};
 
 module.exports = {
-    isRequired
+    isRequired,
+    isRequiredFile
 }

@@ -1,134 +1,43 @@
-// const ResponseModal = require('../../../handler/http/ResponseModal')
-// const authDao = require('./dao');
-// const path = require("path");
-// const multer = require("multer");
-// const { v4: uuidv4 } = require("uuid");
-
-
-
-// const changeHair = async function (userid,uploadimage,gender,hairStyle,hairColor,genraterImg,transactionId,createdAT,updatedAT) {
-//     try {
-//         let hair_insert = await authDao.changeHair_insert(userid, uploadimage, gender, hairStyle, hairColor, genraterImg, transactionId, createdAT, updatedAT);
-//         if (hair_insert.rowCount === 0) {
-//             return new ResponseModal()
-//                 .setStatus("error")
-//                 .setStatusCode(400)
-//                 .setMessage("Insert failed");
-//         }
-//         const uploadimg = req.file.filename; // UUID file name from multer
-
-//         return new ResponseModal()
-//             .setStatus("success")
-//             .setStatusCode(200)
-//             .setMessage("Hair change uploaded successfully")
-//             .setData({
-//                 fileName: uploadimg,
-//                 filePath: `${req.protocol}://${req.get("host")}/changehair_upload/${req.file.filename}`
-
-//             });
-//     } catch (error) {
-//         console.error(err);
-//         return new ResponseModal()
-//             .setStatus("error")
-//             .setStatusCode(500)
-//             .setMessage("Server error");
-//     }
-// }
-
-// module.exports={
-//     changeHair
-// }
-
-
-
-
-// ------------------------chat gpt ---------------
-
-
 const ResponseModal = require('../../../handler/http/ResponseModal');
 const authDao = require('./dao');
+const path = require("path");
+const { ValidationError } = require('../../../handler/http/error/ValidationError');
+const getUploadUrl = require('../../../handler/config/uploadUrl');
+const getGenrateUrl = require('../../../handler/config/genrate');
+const { details, getConfigByStoreFolder } = require('../../../handler/config/config');
+const changeHairConfig = getConfigByStoreFolder("Change_Hair");
 
-/**
- * Insert a change-hair record.
- * @param {string} userid
- * @param {string} uploadimage  // filename saved by multer (req.file.filename)
- * @param {string} gender
- * @param {string} hairStyle
- * @param {string} hairColor
- * @param {string} genraterImg
- * @param {string} transactionId
- * @param {Date}   createdAT
- * @param {Date}   updatedAT
- */
-const changeHair = async function (
-  userid,
-  uploadimage,
-  gender,
-  hairStyle,
-  hairColor,
-  genraterImg,
-  transactionId
-
-) {
+const changeHair = async function (req, userid, gender, hairStyle, hairColor) {
   try {
-    const validGenraterImg = await authDao.validForGenrater(userid);
-    if (!validGenraterImg || validGenraterImg.rowCount === 0) {
-      return new ResponseModal()
-        .setStatus('error')
-        .setStatusCode(404)
-        .setMessage('User not found');
+    let uploadedFile = req.files?.HairuploadPhoto?.[0];
+    if (!uploadedFile) {
+      throw new ValidationError('HairuploadPhoto file is required');
     }
+    const baseURL = `${req.protocol}://${req.get("host")}`;
+    const uploadsDir = path.join(__dirname, "../../../uploads");
+    const { uploadUrl } = getUploadUrl(changeHairConfig.storeFolder, uploadsDir, baseURL, uploadedFile);
+    const { genraterUrl } = getGenrateUrl(changeHairConfig.storeFolder, uploadsDir, baseURL, uploadedFile);
 
-    const userCredit = validGenraterImg.rows[0].credit;
-    if (userCredit < 10) {
+    const userCredit = req.user.credits;
+    if (userCredit < changeHairConfig.credit) {
       return new ResponseModal()
         .setStatus('error')
         .setStatusCode(403)
         .setMessage('Not enough credits');
     }
+    const transactionEntry = await authDao.transaction_insert(userid, changeHairConfig.descriptionTrans, changeHairConfig.credit);
+    const transactionId = transactionEntry.rows[0].id;
+    
+    await authDao.changeHair_insert(userid, uploadUrl, gender, hairStyle, hairColor, genraterUrl, transactionId);
+    await authDao.totalCredits(userid, changeHairConfig.credit);
 
-    const result = await authDao.changeHair_insert(
-      userid,
-      uploadimage,
-      gender,
-      hairStyle,
-      hairColor,
-      genraterImg,
-      transactionId
-
-    );
-
-    if (!result || result.rowCount === 0) {
-      return new ResponseModal()
-        .setStatus('error')
-        .setStatusCode(400)
-        .setMessage('Insert failed');
-    }
-    const descriptionTrans = 'change hair style';
-    const transactionEntry = await authDao.transaction_insert(userid, descriptionTrans, -10);
-    if (!transactionEntry || transactionEntry.rowCount === 0) {
-      return new ResponseModal()
-        .setStatus('error')
-        .setStatusCode(400)
-        .setMessage('transaction failed');
-    }
-    const totalCredits = await authDao.totalCredits(userid);
-    if (!totalCredits || totalCredits.rowCount === 0) {
-      return new ResponseModal()
-        .setStatus('error')
-        .setStatusCode(400)
-        .setMessage('credits fetch failed');
-    }
-
-
-    const fileUrl = `/changehair_upload/${genraterImg}`;
     return new ResponseModal()
       .setStatus('success')
       .setStatusCode(200)
       .setMessage('Hair change saved')
       .setData({
-        file: genraterImg,
-        fileUrl
+        file: genraterUrl,
+        fileUrl: genraterUrl
       });
   } catch (error) {
     console.error('changeHair error:', error);

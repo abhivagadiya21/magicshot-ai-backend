@@ -1,8 +1,9 @@
+const { validForGenrater } = require('../app/imageGeneration/core/dao/index')
 const jwt = require("jsonwebtoken");
 
-function authMiddleware(req, res, next) {
+async function authMiddleware(req, res, next) {
     const authHeader = req.headers["authorization"];
-    
+
     const token = authHeader && authHeader.split(" ")[1];
 
     if (!token) {
@@ -11,7 +12,13 @@ function authMiddleware(req, res, next) {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded; 
+        const credits = await validForGenrater(decoded.id);
+        req.user = {
+            id: decoded.id,
+            email: decoded.email,
+            credits: credits.rows[0].credit
+        }
+
         next();
     } catch (err) {
         return res.status(403).json({ message: "Invalid or expired token" });

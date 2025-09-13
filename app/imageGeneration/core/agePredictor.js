@@ -1,54 +1,41 @@
 const ResponseModal = require('../../../handler/http/ResponseModal')
 const authDao = require('./dao')
+const getUploadUrl = require('../../../handler/config/uploadUrl');
+const { ValidationError } = require('../../../handler/http/error/ValidationError');
+const getGenrateUrl = require('../../../handler/config/genrate');
+const { details, getConfigByStoreFolder } = require('../../../handler/config/config');
+const path = require("path");
+const agePredictorConfig = getConfigByStoreFolder("Age_Predictor");
 
-
-const agePredictor = async function (userid, uploadimage, Predict_age, genrater_Img, transactionId) {
+const agePredictor = async function (req, userid, Predict_age) {
     try {
-        const validGenraterImg = await authDao.validForGenrater(userid);
-        if (!validGenraterImg || validGenraterImg.rowCount === 0) {
-            return new ResponseModal()
-                .setStatus('error')
-                .setStatusCode(404)
-                .setMessage('User not found');
+        let uploadFile = req.files?.agePredictorUpload?.[0];
+        if (!uploadFile) {
+            throw new ValidationError('agePredictorUpload file is required');
         }
+        const baseURL = `${req.protocol}://${req.get("host")}`;
+        const uploadsDir = path.join(__dirname, "../../../uploads");
+        const { uploadUrl } = getUploadUrl(agePredictorConfig.storeFolder, uploadsDir, baseURL, uploadFile);
 
-        const userCredit = validGenraterImg.rows[0].credit;
-        if (userCredit < 10) {
+        const userCredit = req.user.credits;
+        if (userCredit < agePredictorConfig.credit) {
             return new ResponseModal()
                 .setStatus('error')
                 .setStatusCode(403)
                 .setMessage('Not enough credits');
         }
-        
-        const result = await authDao.agePredictor_insert(userid, uploadimage, Predict_age, genrater_Img, transactionId);
-        if (!result || result.rowCount === 0) {
-            return new ResponseModal()
-                .setStatus('error')
-                .setStatusCode(400)
-                .setMessage('Insert failed');
-        }
-        const descriptionTrans = 'Age Predictor';
-        const transactionEntry = await authDao.transaction_insert(userid, descriptionTrans, -10);
-        if (!transactionEntry || transactionEntry.rowCount === 0) {
-            return new ResponseModal()
-                .setStatus('error')
-                .setStatusCode(400)
-                .setMessage('transaction failed');
-        }
-        const totalCredits = await authDao.totalCredits(userid);
-        if (!totalCredits || totalCredits.rowCount === 0) {
-            return new ResponseModal()
-                .setStatus('error')
-                .setStatusCode(400)
-                .setMessage('credits fetch failed');
-        }
+        const transactionEntry = await authDao.transaction_insert(userid, agePredictorConfig.descriptionTrans, agePredictorConfig.credit);
+        const transactionId = transactionEntry.rows[0].id;
+        await authDao.agePredictor_insert(userid, uploadUrl, Predict_age, transactionId);
+        await authDao.totalCredits(userid, agePredictorConfig.credit);
+
         return new ResponseModal()
             .setStatus("success")
             .setStatusCode(200)
             .setMessage("Age prediction recorded successfully")
             .setData({
                 agepredic: Predict_age,
-                file: uploadimage,
+                file: uploadUrl,
             });
     } catch (error) {
         return new ResponseModal()
@@ -57,7 +44,6 @@ const agePredictor = async function (userid, uploadimage, Predict_age, genrater_
             .setMessage("Failed to record age prediction: " + error.message);
     }
 }
-
 
 module.exports = {
     agePredictor
