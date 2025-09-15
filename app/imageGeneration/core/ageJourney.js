@@ -1,53 +1,46 @@
 const ResponseModal = require('../../../handler/http/ResponseModal');
+const handleUrl = require('../../../handler/config/url');
+const getUploadUrl = require('../../../handler/config/uploadUrl');
+const getGenrateUrl = require('../../../handler/config/genrate');
+const { ValidationError } = require('../../../handler/http/error/ValidationError');
+const { details, getConfigByStoreFolder } = require('../../../handler/config/config');
 const authDao = require('./dao');
-const ageJourney = async function (userid, uploadimage, selectAge, genraterImg, transactionId) {
-    try {
-        const validGenraterImg = await authDao.validForGenrater(userid);
-        if (!validGenraterImg || validGenraterImg.rowCount === 0) {
-            return new ResponseModal()
-                .setStatus('error')
-                .setStatusCode(404)
-                .setMessage('User not found');
-        }
+const fs = require("fs");
+const path = require("path");
+const { v4: uuidv4 } = require("uuid");
 
-        const userCredit = validGenraterImg.rows[0].credit;
-        if (userCredit < 10) {
+const ageJourneyConfig = getConfigByStoreFolder("Age_Journey");
+
+const ageJourney = async function (req, userid, selectAge) {
+    try {
+        let uploadedFile = req.files?.ageJourneyUpload?.[0];
+        if (!uploadedFile) {
+            throw new ValidationError('ageJourneyUpload file is required');
+        }
+        const baseURL = `${req.protocol}://${req.get("host")}`;
+        const uploadsDir = path.join(__dirname, "../../../uploads");
+        const { uploadUrl } = getUploadUrl(ageJourneyConfig.storeFolder, uploadsDir, baseURL, uploadedFile);
+        const { genraterUrl } = getGenrateUrl(ageJourneyConfig.storeFolder, uploadsDir, baseURL, uploadedFile);
+
+        const userCredit = req.user.credits;
+        if (userCredit < ageJourneyConfig.credit) {
             return new ResponseModal()
                 .setStatus('error')
                 .setStatusCode(403)
                 .setMessage('Not enough credits');
         }
 
-        const result = await authDao.ageJourney_insert(userid, uploadimage, selectAge, genraterImg, transactionId);
-        if (!result || result.rowCount === 0) {
-            return new ResponseModal()
-                .setStatus('error')
-                .setStatusCode(400)
-                .setMessage('Insert failed');
-        }
-        const descriptionTrans = 'Age Journey';
-        const transactionEntry = await authDao.transaction_insert(userid, descriptionTrans, -10);
-        if (!transactionEntry || transactionEntry.rowCount === 0) {
-            return new ResponseModal()
-                .setStatus('error')
-                .setStatusCode(400)
-                .setMessage('transaction failed');
-        }
-        const totalCredits = await authDao.totalCredits(userid);
-        if (!totalCredits || totalCredits.rowCount === 0) {
-            return new ResponseModal()
-                .setStatus('error')
-                .setStatusCode(400)
-                .setMessage('credits fetch failed');
-        }
-        const fileUrl = `/ageJourney_upload/${genraterImg}`;
+        const transactionEntry = await authDao.transaction_insert(userid, ageJourneyConfig.descriptionTrans, ageJourneyConfig.credit);
+        const transactionId = transactionEntry.rows[0].id;
+
+        await authDao.ageJourney_insert(userid, uploadUrl, selectAge, genraterUrl, transactionId);
+        await authDao.totalCredits(userid, ageJourneyConfig.credit);
+
         return new ResponseModal()
-            .setStatus('success')
-            .setStatusCode(200)
             .setMessage('age journy change saved')
             .setData({
-                file: genraterImg,
-                fileUrl
+                file: genraterUrl,
+                fileUrl: genraterUrl
             });
     } catch (error) {
         console.error('agejourney error:', error);
