@@ -12,7 +12,7 @@ const agePredictorFn = async function (req) {
 
   let uploadimage = null;
 
-  const baseURL = `https://${req.get('host')}/uploads/agepredictor_upload`;
+  const baseURL = `http://${req.get('host')}/uploads/agepredictor_upload`;
 
   if (req.files && req.files.agePredictorUpload && req.files.agePredictorUpload.length > 0) {
     const uploadedFile = req.files.agePredictorUpload[0];
@@ -38,7 +38,7 @@ const ageJourneyFn = async function (req) {
   let uploadimage = null;
   let genraterImg = null;
 
-  const baseURL = `https://${req.get('host')}/uploads/agejourney_upload`;
+  const baseURL = `http://${req.get('host')}/uploads/agejourney_upload`;
 
   if (req.files && req.files.ageJourneyUpload && req.files.ageJourneyUpload.length > 0) {
     const uploadedFile = req.files.ageJourneyUpload[0];
@@ -75,7 +75,7 @@ const babyGeneratorFn = async function (req) {
   let parent2 = null;
   let genraterImg = null;
 
-  const baseURL = `https://${req.get('host')}/uploads/baby_upload`;
+  const baseURL = `http://${req.get('host')}/uploads/baby_upload`;
   if ((req.files && req.files.parent1 && req.files.parent1.length > 0) || (req.files && req.files.parent2 && req.files.parent2.length > 0)) {
 
     if (req.files.parent1 && req.files.parent1.length > 0) {
@@ -119,7 +119,7 @@ const changeHairstyleFn = async function (req) {
   let uploadimage = null;
   let genraterImg = null;
 
-  const baseURL = `https://${req.get('host')}/uploads/changehair_upload`;
+  const baseURL = `http://${req.get('host')}/uploads/changehair_upload`;
 
   if (req.files && req.files.HairuploadPhoto && req.files.HairuploadPhoto.length > 0) {
     const uploadedFile = req.files.HairuploadPhoto[0];
