@@ -8,7 +8,7 @@ const database = {
     //     idleTimeoutMillis: 3000
     // }
     local: {
-        host: "192.168.1.8",
+        host: "192.168.1.6",
         user: "postgres",
         password: "Abhi1234@",
         database: "magicshot",
