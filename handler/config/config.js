@@ -20,6 +20,12 @@ const details = [
         credit:-50,
         descriptionTrans:'Change Hair'
     },
+    {
+        name : "addsignupbouns",
+        storeFolder : "",
+        credit: +100,
+        descriptionTrans : 'Sign Up Bonus'
+    }
 ]
 function getConfigByStoreFolder(name) {
     return details.find(
