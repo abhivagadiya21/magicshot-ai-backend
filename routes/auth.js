@@ -22,4 +22,8 @@ router.get('/profile', authMiddleware, async function (req, res, next) {
   await functionHandler.requestHandler(req, res, controller.getUserProfileFn);
 });
 
+router.get('/transactions', authMiddleware, async function (req, res, next) {
+  await functionHandler.requestHandler(req, res, controller.getUserTransactionsFn);
+});
+
 module.exports = router;

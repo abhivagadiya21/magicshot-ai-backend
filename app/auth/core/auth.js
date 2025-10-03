@@ -5,6 +5,8 @@ const authDao = require('./dao')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
+const addSignUpBounsConfig = require('../../../handler/config/config').getConfigByStoreFolder("addsignupbouns");
+
 const generateToken = (user) => {
     return jwt.sign(
         { id: user.id, email: user.email },
@@ -22,7 +24,7 @@ const addSignUpBouns = async (userId) => {
                 .setStatusCode(400)
                 .setMessage('bouns failed');
         }
-        const transactionEntry = await authDao.transaction_insert(userId, 'Sign Up Bonus', 100);
+        const transactionEntry = await authDao.transaction_insert(userId, 'Sign Up Bonus', addSignUpBounsConfig.credit);
         if (!transactionEntry || transactionEntry.rowCount === 0) {
             return new ResponseModal()
                 .setStatus('error')
@@ -45,6 +47,24 @@ const addSignUpBouns = async (userId) => {
             .setMessage('internal server error');
     }
 };
+const getUserTransactions = async (userId) => {
+    try {
+        const getTransactions = await authDao.getTransactions(userId);
+        return new ResponseModal()
+            .setStatus('success')
+            .setStatusCode(200)
+            .setMessage('transaction fetch success')
+            .setData({
+                transactionsDetails: getTransactions.rows
+            });
+    } catch (error) {
+        console.error(" Get Transactions Function Error:", error.message);
+        return new ResponseModal()
+            .setStatus('error')
+            .setStatusCode(500)
+            .setMessage('internal server error');
+    }
+}
 const getUserProfile = async (userId) => {
     try {
         const credit = await authDao.getcredit(userId);
@@ -59,7 +79,9 @@ const getUserProfile = async (userId) => {
             .setStatusCode(200)
             .setMessage('credit fetch success')
             .setData({
-                credits: credit.rows[0].credit
+                credits: credit.rows[0].credit,
+                name : credit.rows[0].name,
+                email : credit.rows[0].email,
             });
     } catch (error) {
         console.error(" Get Credit Function Error:", error.message);
@@ -103,7 +125,7 @@ const login = async function (email, password) {
         });
 };
 
-const register = async function (email, password) {
+const register = async function (email, password,name) {
     try {
         let existingUser = await authDao.validateUser(email);
         if (existingUser.rows.length > 0) {
@@ -114,7 +136,7 @@ const register = async function (email, password) {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        let res = await authDao.registerUser(email, hashedPassword);
+        let res = await authDao.registerUser(email, hashedPassword,name);
         const user = res.rows[0];
         console.log('Registered user:', user);
         await addSignUpBouns(user.id);
@@ -142,5 +164,6 @@ const register = async function (email, password) {
 module.exports = {
     login,
     register,
-    getUserProfile
+    getUserProfile,
+    getUserTransactions
 }
