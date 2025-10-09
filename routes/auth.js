@@ -3,6 +3,9 @@ var router = express.Router();
 var functionHandler = require('../handler/http/requestHandler')
 var controller = require('../app/auth/controller')
 var authMiddleware = require('../middlewares/auth');
+var createMulterUpload = require('../handler/utils/multerConfig')
+
+const upload = createMulterUpload("profile_pics");
 
 router.post('/login', async function (req, res, next) {
   await functionHandler.requestHandler(req, res, controller.loginFn)
@@ -20,6 +23,15 @@ router.get("/uploads/:folder/:filename", (req, res) => {
 
 router.get('/profile', authMiddleware, async function (req, res, next) {
   await functionHandler.requestHandler(req, res, controller.getUserProfileFn);
+});
+
+router.post('/profile/changeprofileimage', authMiddleware,upload.single('profileImage'),
+   async function (req, res, next) {
+  await functionHandler.requestHandler(req, res, controller.setProfileImageFn);
+});
+
+router.post('/profile/usernameBio', authMiddleware, async function (req, res, next) {
+  await functionHandler.requestHandler(req, res, controller.setProfileInfoFn);
 });
 
 router.get('/transactions', authMiddleware, async function (req, res, next) {

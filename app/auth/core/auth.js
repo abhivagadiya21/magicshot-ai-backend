@@ -1,6 +1,8 @@
 
 const ResponseModal = require('../../../handler/http/ResponseModal');
 const { get } = require('../../../routes/auth');
+const path = require("path");
+const getUploadUrl = require('../../../handler/config/uploadUrl');
 const authDao = require('./dao')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
@@ -74,14 +76,18 @@ const getUserProfile = async (userId) => {
                 .setStatusCode(400)
                 .setMessage('credit fetch failed');
         }
+
         return new ResponseModal()
             .setStatus('success')
             .setStatusCode(200)
             .setMessage('credit fetch success')
             .setData({
                 credits: credit.rows[0].credit,
-                name : credit.rows[0].name,
-                email : credit.rows[0].email,
+                name: credit.rows[0].name,
+                email: credit.rows[0].email,
+                username: credit.rows[0].username,
+                bio: credit.rows[0].bio,
+                profileImage: credit.rows[0].profileimage
             });
     } catch (error) {
         console.error(" Get Credit Function Error:", error.message);
@@ -92,6 +98,64 @@ const getUserProfile = async (userId) => {
             .setMessage('internal server error');
     }
 }
+
+const setProfileImage = async (req, userId, profileImg) => {
+    try {
+        console.log("Profile Image Filename:", profileImg);
+        const baseURL = `${req.protocol}://${req.get("host")}`;
+        const uploadsDir = path.join(__dirname, "../../../uploads");
+        const { uploadUrl } = getUploadUrl("profile_pics", uploadsDir, baseURL, profileImg);
+
+        const updateProfileImage = await authDao.insertProfileImage(userId, uploadUrl); // Assuming userName and bio are not being updated here
+        if (!updateProfileImage || updateProfileImage.rowCount === 0) {
+            return new ResponseModal()
+                .setStatus('error')
+                .setStatusCode(400)
+                .setMessage('Profile image update failed');
+        }
+        return new ResponseModal()
+            .setStatus('success')
+            .setStatusCode(200)
+            .setMessage('Profile image updated successfully')
+            .setData({
+                // profileImage: updateProfileImage.rows[0].profileimage
+                profileImage: uploadUrl
+            });
+    } catch (error) {
+        console.error(" Update Profile Image Function Error:", error.message);
+        return new ResponseModal()
+            .setStatus('error')
+            .setStatusCode(500)
+            .setMessage('internal server error');
+    }
+}
+
+const setProfileInfo = async (userId, userName, bio) => {
+    try {
+        const updateProfileInfo = await authDao.insertProfileInfo(userId, userName, bio); // Assuming profileImg is not being updated here        
+        if (!updateProfileInfo || updateProfileInfo.rowCount === 0) {
+            return new ResponseModal()
+                .setStatus('error')
+                .setStatusCode(400)
+                .setMessage('Profile info update failed');
+        }
+        return new ResponseModal()
+            .setStatus('success')
+            .setStatusCode(200)
+            .setMessage('Profile info updated successfully')
+            .setData({
+                userName: updateProfileInfo.rows[0].username,
+                bio: updateProfileInfo.rows[0].bio
+            });
+    } catch (error) {
+        console.error(" Update Profile Info Function Error:", error.message);
+        return new ResponseModal()
+            .setStatus('error')
+            .setStatusCode(500)
+            .setMessage('internal server error');
+    }
+}
+
 
 const login = async function (email, password) {
     let res = await authDao.validateUser(email);
@@ -125,7 +189,7 @@ const login = async function (email, password) {
         });
 };
 
-const register = async function (email, password,name) {
+const register = async function (email, password, name) {
     try {
         let existingUser = await authDao.validateUser(email);
         if (existingUser.rows.length > 0) {
@@ -136,7 +200,7 @@ const register = async function (email, password,name) {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        let res = await authDao.registerUser(email, hashedPassword,name);
+        let res = await authDao.registerUser(email, hashedPassword, name);
         const user = res.rows[0];
         console.log('Registered user:', user);
         await addSignUpBouns(user.id);
@@ -165,5 +229,6 @@ module.exports = {
     login,
     register,
     getUserProfile,
-    getUserTransactions
+    getUserTransactions,
+    setProfileImage, setProfileInfo
 }

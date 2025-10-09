@@ -41,6 +41,23 @@ const getTransactions = async (userId) => {
     let values = [userId];
     return await pgsql.query(query, values);
 }
+// const updateProfile = async (userId,userName,bio,profileImg) => {
+//     let query = `update "usersregister" set "username" =  $2, "bio" = $3 , "profileimage"=$4  where "id" = $1 returning *`;
+//     let values = [userId,userName,bio,profileImg];
+//     return await pgsql.query(query, values);
+// }
+
+const insertProfileInfo = async (userId, userName, bio) => {
+    let query = `update "usersregister" set "username" =  $2, "bio" = $3  where "id" = $1 returning *`;
+    let values = [userId, userName, bio];
+    return await pgsql.query(query, values);
+}
+
+const insertProfileImage = async (userId, profileImg) => {
+    let query = `update "usersregister" set "profileimage"=$2  where "id" = $1 returning *`;
+    let values = [userId, profileImg];
+    return await pgsql.query(query, values);
+}
 
 module.exports = {
     validateUser,
@@ -48,5 +65,8 @@ module.exports = {
     addSignUpBouns,
     transaction_insert,
     getcredit,
-    getTransactions
+    getTransactions,
+    // updateProfile,
+    insertProfileImage,
+    insertProfileInfo
 }

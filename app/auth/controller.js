@@ -12,21 +12,38 @@ const registerFn = async function (req) {
     let email = isRequired(req.body.email)
     let password = isRequired(req.body.password)
     let name = isRequired(req.body.name)
-    return await auth.register(email, password,name)
+    return await auth.register(email, password, name)
 }
 
 const getUserProfileFn = async function (req) {
     let userId = req.user.id; // Assuming authMiddleware attaches user info to req.user
+    // const profileImg = req.savedFiles ? req.savedFiles.profileImage : null;
     return await auth.getUserProfile(userId);
 }
 
+const setProfileImageFn = async function (req) {
+    let userId = req.user.id;
+    // const profileImg = req.files.profileImage ? req.files.profileImage[0].filename : null;
+    const profileImg = req.file ? req.file.filename : null; // ✅ Corrected
+    return await auth.setProfileImage(req,userId, profileImg);
+}
+
+const setProfileInfoFn = async function (req) {
+    let userId = req.user.id;
+    const userName = req.body.username;
+    const bio = req.body.bio;
+    return await auth.setProfileInfo(userId, userName, bio);
+}
+
 const getUserTransactionsFn = async function (req) {
-    let userId = req.user.id;   
+    let userId = req.user.id;
     return await auth.getUserTransactions(userId);
 }
 module.exports = {
     loginFn,
     registerFn,
     getUserProfileFn,
-    getUserTransactionsFn
+    getUserTransactionsFn,
+    setProfileImageFn,
+    setProfileInfoFn
 }
