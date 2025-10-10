@@ -37,7 +37,7 @@ const ageJourney_insert = async function (userid, uploadUrl, selectAge, genrater
 const babygenerator_insert = async function (userid, parent1, parent2, gender, genraterImg, transactionId) {
   const query = `
     INSERT INTO "baby_generation"
-    ("user_id","parent_1","parent_2","gender","generator_image","transaction_id")
+    ("user_id","parent_1","parent_2","gender","generator_img","transaction_id")
     VALUES ($1,$2,$3,$4,$5,$6)
     RETURNING *`;
   const values = [userid, parent1, parent2, gender, genraterImg, transactionId];
