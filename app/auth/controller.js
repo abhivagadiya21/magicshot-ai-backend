@@ -21,11 +21,16 @@ const getUserProfileFn = async function (req) {
     return await auth.getUserProfile(userId);
 }
 
+const getUserImageHistoryFn = async function (req) {
+    let userId = req.user.id;
+    return await auth.getUserImageHistory(userId);
+}
+
 const setProfileImageFn = async function (req) {
     let userId = req.user.id;
     // const profileImg = req.files.profileImage ? req.files.profileImage[0].filename : null;
     const profileImg = req.file ? req.file.filename : null; // ✅ Corrected
-    return await auth.setProfileImage(req,userId, profileImg);
+    return await auth.setProfileImage(req, userId, profileImg);
 }
 
 const setProfileInfoFn = async function (req) {
@@ -45,5 +50,5 @@ module.exports = {
     getUserProfileFn,
     getUserTransactionsFn,
     setProfileImageFn,
-    setProfileInfoFn
+    setProfileInfoFn, getUserImageHistoryFn
 }

@@ -156,6 +156,32 @@ const setProfileInfo = async (userId, userName, bio) => {
     }
 }
 
+const getUserImageHistory = async (userId) => {
+    try {
+        const imageHistory = await authDao.imageHistory(userId);
+        if (!imageHistory) {
+            return new ResponseModal()
+                .setStatus('error')
+                .setStatusCode(400)
+                .setMessage('Image history fetch failed');
+        }
+        // console.log(" Image History:", imageHistory.rows);
+        return new ResponseModal()
+            .setStatus('success')
+            .setStatusCode(200)
+            .setMessage('Image history fetch success')
+            .setData({
+                images: imageHistory.rows
+            })
+    } catch (error) {
+        console.error(" Get Image History Function Error:", error.message);
+        return new ResponseModal()
+            .setStatus('error')
+            .setStatusCode(500)
+            .setMessage('internal server error');
+    }
+}
+
 
 const login = async function (email, password) {
     let res = await authDao.validateUser(email);
@@ -230,5 +256,7 @@ module.exports = {
     register,
     getUserProfile,
     getUserTransactions,
-    setProfileImage, setProfileInfo
+    setProfileImage,
+    setProfileInfo,
+    getUserImageHistory
 }
