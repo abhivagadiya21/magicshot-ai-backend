@@ -95,73 +95,77 @@ const imageHistory = async (userId) => {
     // ORDER BY created_at DESC;`;
     let query = `SELECT * FROM (
   SELECT	 
-   id,
-    user_id,
-    transaction_id,
-    generator_img AS generator_img,
+   ch.id,
+    ch.user_id,
+    ch.transaction_id,
+    ch.generator_img AS generator_img,
 	'change_hairstyle' AS record_type,
-    '-50' AS use_credit,
-    created_at,
+	t.credits AS use_credit,
+    ch.created_at,
     jsonb_build_object(
-        'upload_img', upload_img,
-        'hair_style', hair_style,
-		'hair_color',hair_color,
-		'gender', gender
+        'upload_img', ch.upload_img,
+        'hair_style', ch.hair_style,
+		'hair_color',ch.hair_color,
+		'gender', ch.gender
     ) AS metadata
-  FROM change_hairstyle
-  WHERE user_id = $1
+  FROM change_hairstyle ch
+  JOIN transactions t on ch.transaction_id = t.id
+  WHERE ch.user_id = $1
 
   UNION ALL
 
   SELECT	 
-   id,
-    user_id,
-    transaction_id,
-    upload_img AS generator_img,
+   ap.id,
+    ap.user_id,
+    ap.transaction_id,
+    ap.upload_img AS generator_img,
 	'age_predictor' AS record_type,
-    '-8' AS use_credit,
-    created_at,
+	t.credits AS use_credit,
+    ap.created_at,
     jsonb_build_object(
-        'upload_img', upload_img,
-        'predict_age', predict_age
+        'upload_img', ap.upload_img,
+        'predict_age', ap.predict_age
     ) AS metadata
-  FROM age_predictor
-  WHERE user_id = $1
+  FROM age_predictor ap
+  JOIN transactions t on ap.transaction_id = t.id
+  WHERE ap.user_id = $1
 
   UNION ALL
   
   SELECT 
-    id,
-    user_id,
-    transaction_id,
-    generator_img AS generator_img,
+    bg.id,
+    bg.user_id,
+    bg.transaction_id,
+    bg.generator_img AS generator_img,
 	'baby_generation' AS record_type,
-    '-10' AS use_credit,
-    created_at,
+	t.credits AS use_credit,
+    bg.created_at,
     jsonb_build_object(
-        'parent_1', parent_1,
-        'parent_2', parent_2,
-		'gender', gender
+        'parent_1', bg.parent_1,
+        'parent_2', bg.parent_2,
+		'gender', bg.gender
     ) AS metadata
-  FROM baby_generation
-  WHERE user_id = $1
+  FROM baby_generation bg
+  JOIN transactions t on bg.transaction_id = t.id
+  WHERE bg.user_id = $1
 
   UNION ALL
 
   SELECT
-    id,
-    user_id,
-    transaction_id,
-    generator_img,
+    aj.id,
+    aj.user_id,
+    aj.transaction_id,
+    aj.generator_img,
     'age_journey' AS record_type,
-    '-15' AS use_credit,
-    created_at,
+	t.credits AS use_credit,
+    aj.created_at,
     jsonb_build_object(
-        'select_age', select_age,
-        'upload_img', upload_img
+        'select_age', aj.select_age,
+        'upload_img', aj.upload_img
     ) AS metadata
-  FROM age_journey
-  WHERE user_id = $1
+  FROM age_journey aj
+  JOIN transactions t on aj.transaction_id = t.id
+  WHERE aj.user_id = $1
 ) as all_data
 ORDER BY created_at DESC;`;
     let values = [userId];
