@@ -13,10 +13,11 @@ function getUploadUrl(foldername, uploadsDir, baseURL, uploadedFile) {
     if (!filename) {
         throw new Error("filename missing in getUploadUrl()");
     }
-
+    
     const uploadFilePath = path.join(uploadPath, filename);
     const uploadRelative = path.relative(uploadsDir, uploadFilePath);
     const uploadUrl = `${baseURL}/uploads/${uploadRelative.replace(/\\/g, "/")}`;
+    // .replace(path.extname(uploadRelative), ".jpg")
     return { uploadUrl };
 }
 module.exports = getUploadUrl;
