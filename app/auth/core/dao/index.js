@@ -60,46 +60,47 @@ const insertProfileImage = async (userId, profileImg) => {
 }
 
 const imageHistory = async (userId) => {
-//     let query = `SELECT * FROM (
-//   SELECT 
-//     id,
-//     user_id,
-//     transaction_id,
-//     generator_img AS generator_img,
-// 	'baby_generation' AS record_type,
-//     created_at,
-//     jsonb_build_object(
-//         'parent_1', parent_1,
-//         'parent_2', parent_2,
-// 		'gender', gender
-//     ) AS metadata
-//   FROM baby_generation
-//   WHERE user_id = $1
+    //     let query = `SELECT * FROM (
+    //   SELECT 
+    //     id,
+    //     user_id,
+    //     transaction_id,
+    //     generator_img AS generator_img,
+    // 	'baby_generation' AS record_type,
+    //     created_at,
+    //     jsonb_build_object(
+    //         'parent_1', parent_1,
+    //         'parent_2', parent_2,
+    // 		'gender', gender
+    //     ) AS metadata
+    //   FROM baby_generation
+    //   WHERE user_id = $1
 
-//   UNION ALL
+    //   UNION ALL
 
-//   SELECT
-//     id,
-//     user_id,
-//     transaction_id,
-//     generator_img,
-//     'age_journey' AS record_type,
-//     created_at,
-//     jsonb_build_object(
-//         'select_age', select_age,
-//         'upload_img', upload_img
-//     ) AS metadata
-//   FROM age_journey
-//   WHERE user_id = $1
-// ) as all_data
-// ORDER BY created_at DESC;`;
-let query = `SELECT * FROM (
+    //   SELECT
+    //     id,
+    //     user_id,
+    //     transaction_id,
+    //     generator_img,
+    //     'age_journey' AS record_type,
+    //     created_at,
+    //     jsonb_build_object(
+    //         'select_age', select_age,
+    //         'upload_img', upload_img
+    //     ) AS metadata
+    //   FROM age_journey
+    //   WHERE user_id = $1
+    // ) as all_data
+    // ORDER BY created_at DESC;`;
+    let query = `SELECT * FROM (
   SELECT	 
    id,
     user_id,
     transaction_id,
     generator_img AS generator_img,
 	'change_hairstyle' AS record_type,
+    '-50' AS use_credit,
     created_at,
     jsonb_build_object(
         'upload_img', upload_img,
@@ -118,6 +119,7 @@ let query = `SELECT * FROM (
     transaction_id,
     upload_img AS generator_img,
 	'age_predictor' AS record_type,
+    '-8' AS use_credit,
     created_at,
     jsonb_build_object(
         'upload_img', upload_img,
@@ -134,6 +136,7 @@ let query = `SELECT * FROM (
     transaction_id,
     generator_img AS generator_img,
 	'baby_generation' AS record_type,
+    '-10' AS use_credit,
     created_at,
     jsonb_build_object(
         'parent_1', parent_1,
@@ -151,6 +154,7 @@ let query = `SELECT * FROM (
     transaction_id,
     generator_img,
     'age_journey' AS record_type,
+    '-15' AS use_credit,
     created_at,
     jsonb_build_object(
         'select_age', select_age,
