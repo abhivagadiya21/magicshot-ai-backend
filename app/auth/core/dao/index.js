@@ -36,6 +36,11 @@ const getcredit = async (userId) => {
     let values = [userId];
     return await pgsql.query(query, values);
 }
+const updatePassword = async (userId, newPasswordHash) => {
+    let query = `update "usersregister" set "password" =  $2  where "id" = $1 returning *`;
+    let values = [userId, newPasswordHash];
+    return await pgsql.query(query, values);
+}
 const getTransactions = async (userId) => {
     let query = `select * from "transactions" where "user_id" = $1 order by "created_at" desc`;
     let values = [userId];
@@ -182,5 +187,6 @@ module.exports = {
     // updateProfile,
     insertProfileImage,
     insertProfileInfo,
-    imageHistory
+    imageHistory,
+    updatePassword
 }

@@ -38,6 +38,10 @@ router.post('/profile/usernameBio', authMiddleware, async function (req, res, ne
   await functionHandler.requestHandler(req, res, controller.setProfileInfoFn);
 });
 
+router.post('/profile/changepassword', authMiddleware, async function (req, res, next) {
+  await functionHandler.requestHandler(req, res, controller.changePasswordFn);
+});
+
 router.get('/transactions', authMiddleware, async function (req, res, next) {
   await functionHandler.requestHandler(req, res, controller.getUserTransactionsFn);
 });

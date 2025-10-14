@@ -5,7 +5,8 @@ const path = require("path");
 const getUploadUrl = require('../../../handler/config/uploadUrl');
 const authDao = require('./dao')
 const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const { token } = require('morgan');
 
 const addSignUpBounsConfig = require('../../../handler/config/config').getConfigByStoreFolder("addsignupbouns");
 
@@ -250,7 +251,32 @@ const register = async function (email, password, name) {
             .setMessage(error.message);
     }
 };
-
+const changePassword = async function (userId, oldPassword, newPassword) {
+    try {
+        let res = await authDao.getcredit(userId);
+        const user = res.rows[0];
+        const isMatch = await bcrypt.compare(oldPassword, user.password);
+        if (!isMatch) {
+            return new ResponseModal()
+                .setStatus("error")
+                .setStatusCode(401)
+                .setMessage("Current password is incorrect");
+        }
+        const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+        await authDao.updatePassword(userId, hashedNewPassword);
+        console.log('Password updated for user ID:', userId);
+        return new ResponseModal()
+            .setStatus("success")
+            .setStatusCode(200)
+            .setMessage("Password updated successfully");
+    } catch (error) {
+        console.log(error);
+        return new ResponseModal()
+            .setStatus("error")
+            .setStatusCode(500)
+            .setMessage("Internal server error");
+    }
+}
 module.exports = {
     login,
     register,
@@ -258,5 +284,6 @@ module.exports = {
     getUserTransactions,
     setProfileImage,
     setProfileInfo,
-    getUserImageHistory
+    getUserImageHistory,
+    changePassword
 }
