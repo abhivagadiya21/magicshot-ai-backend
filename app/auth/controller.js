@@ -44,11 +44,19 @@ const getUserTransactionsFn = async function (req) {
     let userId = req.user.id;
     return await auth.getUserTransactions(userId);
 }
+const changePasswordFn = async function (req) {
+    let userId = req.user.id;
+    let oldPassword = isRequired(req.body.currentPassword);
+    let newPassword = isRequired(req.body.newPassword);
+    return await auth.changePassword(userId, oldPassword, newPassword);
+}
 module.exports = {
     loginFn,
     registerFn,
     getUserProfileFn,
     getUserTransactionsFn,
     setProfileImageFn,
-    setProfileInfoFn, getUserImageHistoryFn
+    setProfileInfoFn, 
+    getUserImageHistoryFn,
+    changePasswordFn
 }
