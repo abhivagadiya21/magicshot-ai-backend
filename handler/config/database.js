@@ -10,7 +10,7 @@ const database = {
             rejectUnauthorized: true, // needed if you're using self-signed certs (like on Heroku, Render, Neon, etc.)
         },
     }
-
+// this is comment normal
     // local: {
     //     host: "192.168.1.21",
     //     user: "postgres",
