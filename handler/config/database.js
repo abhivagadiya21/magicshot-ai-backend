@@ -3,13 +3,10 @@ const database = {
         host: "db.pljbpdpaineysedbmhir.supabase.co",
         user: "postgres",
         password: "Abhi1234@",
-        database: "magicshot_supa",
+        database: "postgres",
         port: 5432,
         idleTimeoutMillis: 3000,
-        ssl: {
-            rejectUnauthorized: true, // needed if you're using self-signed certs (like on Heroku, Render, Neon, etc.)
-        },
-        family: 4 // Use IPv4, skip trying IPv6
+        family: 4
     }
 
     // local: {
