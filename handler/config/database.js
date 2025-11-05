@@ -1,25 +1,22 @@
 const database = {
+    local: {
+        host: "aws-1-ap-south-1.pooler.supabase.com",
+        user: "postgres.pljbpdpaineysedbmhir",
+        password: "Abhi1234@",
+        database: "postgres",
+        port: 5432,
+        idleTimeoutMillis: 3000,
+        family: 4
+    }
+
     // local: {
-    //     host: "db.pljbpdpaineysedbmhir.supabase.co",
+    //     host: "192.168.1.21",
     //     user: "postgres",
     //     password: "Abhi1234@",
-    //     database: "magicshot_supa",
+    //     database: "magicshot",
     //     port: 5432,
-    //     idleTimeoutMillis: 3000,
-    //     ssl: {
-    //         rejectUnauthorized: true, // needed if you're using self-signed certs (like on Heroku, Render, Neon, etc.)
-    //     },
-    //     famliy: 4 // Use IPv4, skip trying IPv6
-   // }
-
-    local: {
-        host: "192.168.1.21",
-        user: "postgres",
-        password: "Abhi1234@",
-        database: "magicshot",
-        port: 5432,
-        // idleTimeoutMillis: 3000
-    }
+    //     // idleTimeoutMillis: 3000
+    // }
 }
 
 module.exports = {
