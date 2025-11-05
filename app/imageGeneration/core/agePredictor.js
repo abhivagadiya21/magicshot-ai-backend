@@ -18,7 +18,7 @@ const agePredictor = async function (req, userid, Predict_age) {
         const { uploadUrl } = getUploadUrl(agePredictorConfig.storeFolder, uploadsDir, baseURL, uploadFile);
 
         const userCredit = req.user.credits;
-        if (userCredit < agePredictorConfig.credit) {
+        if (userCredit < -agePredictorConfig.credit) {
             return new ResponseModal()
                 .setStatus('error')
                 .setStatusCode(403)

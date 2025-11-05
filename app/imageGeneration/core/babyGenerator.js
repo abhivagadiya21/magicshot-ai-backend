@@ -21,7 +21,7 @@ const babyGenerator = async function (req, userid, gender) {
         const { uploadUrl: parent2Url } = getUploadUrl(babyGeneratorConfig.storeFolder, uploadsDir, baseURL, uploadParent2);
 
         const userCredit = req.user.credits;
-        if (userCredit < babyGeneratorConfig.credit) {
+        if (userCredit < -babyGeneratorConfig.credit) {
             return new ResponseModal()
                 .setStatus('error')
                 .setStatusCode(403)

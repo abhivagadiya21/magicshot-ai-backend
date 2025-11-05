@@ -4,7 +4,7 @@ function getUploadUrl(foldername, uploadsDir, baseURL, uploadedFile) {
     const monthFolder = new Date().toISOString().slice(0, 7);
     const monthPath = path.join(uploadsDir, foldername, monthFolder);
     const uploadPath = path.join(monthPath, "upload");
-    // fs.mkdirSync(uploadPath, { recursive: true });
+    
      const filename =
         typeof uploadedFile === "string"
             ? uploadedFile
@@ -17,7 +17,6 @@ function getUploadUrl(foldername, uploadsDir, baseURL, uploadedFile) {
     const uploadFilePath = path.join(uploadPath, filename);
     const uploadRelative = path.relative(uploadsDir, uploadFilePath);
     const uploadUrl = `${baseURL}/uploads/${uploadRelative.replace(/\\/g, "/")}`;
-    // .replace(path.extname(uploadRelative), ".jpg")
     return { uploadUrl };
 }
 module.exports = getUploadUrl;

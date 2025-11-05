@@ -19,7 +19,7 @@ const changeHair = async function (req, userid, gender, hairStyle, hairColor) {
     const { genraterUrl } = getGenrateUrl(changeHairConfig.storeFolder, uploadsDir, baseURL, uploadedFile);
 
     const userCredit = req.user.credits;
-    if (userCredit < changeHairConfig.credit) {
+    if (userCredit < -changeHairConfig.credit) {
       return new ResponseModal()
         .setStatus('error')
         .setStatusCode(403)

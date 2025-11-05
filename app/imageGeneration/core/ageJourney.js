@@ -23,7 +23,8 @@ const ageJourney = async function (req, userid, selectAge) {
         const { genraterUrl } = getGenrateUrl(ageJourneyConfig.storeFolder, uploadsDir, baseURL, uploadedFile);
 
         const userCredit = req.user.credits;
-        if (userCredit < ageJourneyConfig.credit) {
+
+        if (userCredit < -ageJourneyConfig.credit) {
             return new ResponseModal()
                 .setStatus('error')
                 .setStatusCode(403)
