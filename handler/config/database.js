@@ -1,7 +1,7 @@
 const database = {
     local: {
         host: "aws-1-ap-south-1.pooler.supabase.com",
-        user: "pljbpdpaineysedbmhir",
+        user: "postgres.pljbpdpaineysedbmhir",
         password: "Abhi1234@",
         database: "postgres",
         port: 5432,
