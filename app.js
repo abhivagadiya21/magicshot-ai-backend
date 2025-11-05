@@ -12,7 +12,7 @@ var app = express();
 app.use(logger('dev'));
 
 app.use(cors({
-  origin: ["http://localhost:5173", "https://magicshot-ai-ten.vercel.app", "http://192.168.1.21:5173"],
+  origin: ["http://localhost:5173", "https://magicshot-ai.vercel.app", "http://192.168.1.21:5173"],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
@@ -27,7 +27,7 @@ app.use(
   "/uploads",
   express.static(path.join(__dirname, "uploads"), {
     setHeaders: (res, path) => {
-      res.setHeader("Access-Control-Allow-Origin", "https://magicshot-ai-ten.vercel.app");
+      res.setHeader("Access-Control-Allow-Origin", "https://magicshot-ai.vercel.app");
     },
   })
 );
