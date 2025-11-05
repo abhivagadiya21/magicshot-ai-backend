@@ -7,7 +7,7 @@ const database = {
         port: 5432,
         idleTimeoutMillis: 3000,
         ssl: {
-            rejectUnauthorized: true, // needed if you're using self-signed certs (like on Heroku, Render, Neon, etc.)
+            rejectUnauthorized: false, // needed if you're using self-signed certs (like on Heroku, Render, Neon, etc.)
         },
     }
 
