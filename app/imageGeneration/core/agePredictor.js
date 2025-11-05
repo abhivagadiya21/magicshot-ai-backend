@@ -13,7 +13,8 @@ const agePredictor = async function (req, userid, Predict_age) {
         if (!uploadFile) {
             throw new ValidationError('agePredictorUpload file is required');
         }
-        const baseURL = `${req.protocol}://${req.get("host")}`;
+        // const baseURL = `${req.protocol}://${req.get("host")}`;
+        const baseURL = `https://${req.get("host")}`;
         const uploadsDir = path.join(__dirname, "../../../uploads");
         const { uploadUrl } = getUploadUrl(agePredictorConfig.storeFolder, uploadsDir, baseURL, uploadFile);
 
