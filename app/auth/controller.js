@@ -7,7 +7,6 @@ const loginFn = async function (req) {
     return await auth.login(email, password)
 }
 
-
 const registerFn = async function (req) {
     let email = isRequired(req.body.email)
     let password = isRequired(req.body.password)
