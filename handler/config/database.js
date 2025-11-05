@@ -9,7 +9,7 @@ const database = {
         ssl: {
             rejectUnauthorized: true, // needed if you're using self-signed certs (like on Heroku, Render, Neon, etc.)
         },
-        famliy: 4 // Use IPv4, skip trying IPv6
+        family: 4 // Use IPv4, skip trying IPv6
     }
 
     // local: {
