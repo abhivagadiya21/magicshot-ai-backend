@@ -17,7 +17,9 @@ const ageJourney = async function (req, userid, selectAge) {
         if (!uploadedFile) {
             throw new ValidationError('ageJourneyUpload file is required');
         }
-        const baseURL = `${req.protocol}://${req.get("host")}`;
+        // const baseURL = `${req.protocol}://${req.get("host")}`;
+        const baseURL = `https://${req.get("host")}`;
+
         const uploadsDir = path.join(__dirname, "../../../uploads");
         const { uploadUrl } = getUploadUrl(ageJourneyConfig.storeFolder, uploadsDir, baseURL, uploadedFile);
         const { genraterUrl } = getGenrateUrl(ageJourneyConfig.storeFolder, uploadsDir, baseURL, uploadedFile);

@@ -14,7 +14,9 @@ const babyGenerator = async function (req, userid, gender) {
         if (!uploadParent1 && !uploadParent2) {
             throw new ValidationError('parent1 or parent2 file is required');
         }
-        const baseURL = `${req.protocol}://${req.get("host")}`;
+        // const baseURL = `${req.protocol}://${req.get("host")}`;
+        const baseURL = `https://${req.get("host")}`;
+
         const uploadsDir = path.join(__dirname, "../../../uploads");
         const { uploadUrl: parent1Url } = getUploadUrl(babyGeneratorConfig.storeFolder, uploadsDir, baseURL, uploadParent1);
         const { genraterUrl } = getGenrateUrl(babyGeneratorConfig.storeFolder, uploadsDir, baseURL, uploadParent1);
@@ -29,7 +31,7 @@ const babyGenerator = async function (req, userid, gender) {
         }
         const transactionEntry = await authDao.transaction_insert(userid, babyGeneratorConfig.descriptionTrans, babyGeneratorConfig.credit);
         const transactionId = transactionEntry.rows[0].id;
-        
+
         await authDao.babygenerator_insert(userid, parent1Url, parent2Url, gender, genraterUrl, transactionId);
         await authDao.totalCredits(userid, babyGeneratorConfig.credit);
 

@@ -13,7 +13,9 @@ const changeHair = async function (req, userid, gender, hairStyle, hairColor) {
     if (!uploadedFile) {
       throw new ValidationError('HairuploadPhoto file is required');
     }
-    const baseURL = `${req.protocol}://${req.get("host")}`;
+    // const baseURL = `${req.protocol}://${req.get("host")}`;
+    const baseURL = `https://${req.get("host")}`;
+
     const uploadsDir = path.join(__dirname, "../../../uploads");
     const { uploadUrl } = getUploadUrl(changeHairConfig.storeFolder, uploadsDir, baseURL, uploadedFile);
     const { genraterUrl } = getGenrateUrl(changeHairConfig.storeFolder, uploadsDir, baseURL, uploadedFile);
@@ -27,7 +29,7 @@ const changeHair = async function (req, userid, gender, hairStyle, hairColor) {
     }
     const transactionEntry = await authDao.transaction_insert(userid, changeHairConfig.descriptionTrans, changeHairConfig.credit);
     const transactionId = transactionEntry.rows[0].id;
-    
+
     await authDao.changeHair_insert(userid, uploadUrl, gender, hairStyle, hairColor, genraterUrl, transactionId);
     await authDao.totalCredits(userid, changeHairConfig.credit);
 
