@@ -103,7 +103,6 @@ const getUserProfile = async (userId) => {
 const setProfileImage = async (req, userId, profileImg) => {
     try {
         console.log("Profile Image Filename:", profileImg);
-        // const baseURL = `${req.protocol}://${req.get("host")}`;
         const baseURL = `https://${req.get("host")}`;
         const uploadsDir = path.join(__dirname, "../../../uploads");
         const { uploadUrl } = getUploadUrl("profile_pics", uploadsDir, baseURL, profileImg);
